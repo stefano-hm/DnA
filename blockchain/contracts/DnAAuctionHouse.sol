@@ -63,6 +63,17 @@ contract DnAAuctionHouse is Ownable, ReentrancyGuard {
     require(durationSeconds >= 60, "Duration too short");
     require(startingBid > 0, "Invalid starting bid");
 
+    IDnANFT token = IDnANFT(nft);
+    address currentOwner = token.ownerOf(tokenId);
+
+    require(
+      token.getApproved(tokenId) == address(this) ||
+        token.isApprovedForAll(currentOwner, address(this)),
+      "Auction not approved"
+    );
+
+    token.transferFrom(currentOwner, address(this), tokenId);
+
     auctionCount++;
     uint256 newId = auctionCount;
 
