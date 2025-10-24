@@ -3,11 +3,11 @@ import { Suspense, lazy } from 'react'
 import { Navbar } from './components/Navbar/Navbar'
 import { Loader } from './components/Loader/Loader'
 
-const Home = lazy(() => import('./pages/Home'))
-const Store = lazy(() => import('./pages/Store'))
-const MyNFTs = lazy(() => import('./pages/MyNFTs'))
-const NFTDetail = lazy(() => import('./pages/NFTDetail'))
-const About = lazy(() => import('./pages/About'))
+const Home = lazy(() => import('./pages/Home/Home'))
+const Store = lazy(() => import('./pages/Store/Store'))
+const MyNFTs = lazy(() => import('./pages/MyNFTs/MyNFTs'))
+const NFTDetail = lazy(() => import('./pages/NFTDetail/NFTDetail'))
+const About = lazy(() => import('./pages/About/About'))
 
 function App() {
   return (

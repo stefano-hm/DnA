@@ -1,6 +1,25 @@
 .container {
   text-align: center;
   margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.input,
+.textarea {
+  width: 300px;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.textarea {
+  height: 80px;
+  resize: none;
 }
 
 .button {
@@ -10,7 +29,6 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
   transition: opacity 0.2s ease;
 }
 
@@ -35,4 +53,11 @@
 
 .linkText a:hover {
   text-decoration: underline;
+}
+
+.noAccess {
+  text-align: center;
+  margin-top: 2rem;
+  color: #888;
+  font-size: 0.95rem;
 }
