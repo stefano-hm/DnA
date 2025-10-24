@@ -9,6 +9,8 @@ contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
   mapping(address => bool) public isAdmin;
   mapping(uint256 => uint256) public tokenPrice;
 
+  uint256[] private allTokenIds;
+
   event AdminUpdated(address indexed admin, bool enabled);
   event Minted(address indexed to, uint256 indexed tokenId, string uri);
   event PriceSet(uint256 indexed tokenId, uint256 price);
@@ -33,6 +35,9 @@ contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     require(_ownerOf(tokenId) == address(0), "Already minted");
     _safeMint(to, tokenId);
     _setTokenURI(tokenId, uri);
+
+    allTokenIds.push(tokenId);
+
     emit Minted(to, tokenId, uri);
   }
 
@@ -54,9 +59,33 @@ contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     require(sent, "Payment failed");
 
     _transfer(seller, msg.sender, tokenId);
-
     tokenPrice[tokenId] = 0;
 
     emit Purchased(msg.sender, tokenId, price);
+  }
+
+  function getAllNFTs()
+    external
+    view
+    returns (
+      uint256[] memory ids,
+      address[] memory owners,
+      string[] memory uris,
+      uint256[] memory prices
+    )
+  {
+    uint256 total = allTokenIds.length;
+    ids = new uint256[](total);
+    owners = new address[](total);
+    uris = new string[](total);
+    prices = new uint256[](total);
+
+    for (uint256 i = 0; i < total; i++) {
+      uint256 id = allTokenIds[i];
+      ids[i] = id;
+      owners[i] = ownerOf(id);
+      uris[i] = tokenURI(id);
+      prices[i] = tokenPrice[id];
+    }
   }
 }

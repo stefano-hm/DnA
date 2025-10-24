@@ -29,4 +29,20 @@ describe("DnANFT", function () {
 
     expect(await nft.ownerOf(1)).to.equal(other.address);
   });
+
+  it("should return all minted NFTs via getAllNFTs", async function () {
+    const [owner, admin] = await ethers.getSigners();
+    const DnANFT = await ethers.getContractFactory("DnANFT");
+    const nft = await DnANFT.deploy("DnA Editorials", "DNA");
+    await nft.waitForDeployment();
+
+    await nft.connect(owner).setAdmin(admin.address, true);
+    await nft.connect(admin).mintTo(owner.address, 1, "ipfs://token1");
+    await nft.connect(admin).mintTo(owner.address, 2, "ipfs://token2");
+
+    const [ids, owners, uris, prices] = await nft.getAllNFTs();
+    expect(ids.length).to.equal(2);
+    expect(owners[0]).to.equal(owner.address);
+    expect(uris[0]).to.equal("ipfs://token1");
+  });
 });
