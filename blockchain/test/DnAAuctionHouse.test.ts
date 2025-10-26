@@ -10,7 +10,7 @@ describe("DnAAuctionHouse", function () {
     await nft.waitForDeployment();
 
     await nft.connect(owner).setAdmin(admin.address, true);
-    await nft.connect(admin).mintTo(owner.address, 1, "ipfs://token1");
+    await nft.connect(admin).mintTo(owner.address, "ipfs://token1");
 
     const AH = await ethers.getContractFactory("DnAAuctionHouse");
     const ah = await AH.connect(owner).deploy();

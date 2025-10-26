@@ -9,6 +9,7 @@ contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
   mapping(address => bool) public isAdmin;
   mapping(uint256 => uint256) public tokenPrice;
 
+  uint256 private nextId = 1;
   uint256[] private allTokenIds;
 
   event AdminUpdated(address indexed admin, bool enabled);
@@ -21,23 +22,21 @@ contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     string memory symbol_
   ) ERC721(name_, symbol_) Ownable(msg.sender) {}
 
-  function setAdmin(address account, bool enabled) external onlyOwner {
-    isAdmin[account] = enabled;
-    emit AdminUpdated(account, enabled);
-  }
-
   modifier onlyAdmin() {
     require(msg.sender == owner() || isAdmin[msg.sender], "Not admin");
     _;
   }
 
-  function mintTo(address to, uint256 tokenId, string calldata uri) external onlyAdmin {
-    require(_ownerOf(tokenId) == address(0), "Already minted");
+  function setAdmin(address account, bool enabled) external onlyOwner {
+    isAdmin[account] = enabled;
+    emit AdminUpdated(account, enabled);
+  }
+
+  function mintTo(address to, string calldata uri) external onlyAdmin {
+    uint256 tokenId = nextId++;
     _safeMint(to, tokenId);
     _setTokenURI(tokenId, uri);
-
     allTokenIds.push(tokenId);
-
     emit Minted(to, tokenId, uri);
   }
 
@@ -80,12 +79,15 @@ contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     uris = new string[](total);
     prices = new uint256[](total);
 
+    uint256 count = 0;
     for (uint256 i = 0; i < total; i++) {
       uint256 id = allTokenIds[i];
-      ids[i] = id;
-      owners[i] = ownerOf(id);
-      uris[i] = tokenURI(id);
-      prices[i] = tokenPrice[id];
+      if (_ownerOf(id) == address(0)) continue;
+      ids[count] = id;
+      owners[count] = ownerOf(id);
+      uris[count] = tokenURI(id);
+      prices[count] = tokenPrice[id];
+      count++;
     }
   }
 }
