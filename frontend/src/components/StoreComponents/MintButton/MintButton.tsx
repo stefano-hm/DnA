@@ -1,16 +1,14 @@
 import { useState } from 'react'
-import { useWriteContract, useAccount, usePublicClient } from 'wagmi'
-import { parseEther } from 'viem'
+import { useAccount } from 'wagmi'
 import toast from 'react-hot-toast'
-import { contractsConfig } from '../../contracts/contractsConfig'
+import { useMintNFT } from '../../../hooks/useMintNFT'
 import styles from './MintButton.module.css'
 
 const ADMIN_ADDRESS = '0xCdD94FC9056554E2D3f222515fB52829572c7095'
 
 export function MintButton() {
-  const { address: contractAddress, abi } = contractsConfig.DnANFT
   const { address: userAddress } = useAccount()
-  const publicClient = usePublicClient()!
+  const { mintNFT } = useMintNFT()
   const [txHash, setTxHash] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     title: '',
@@ -20,7 +18,7 @@ export function MintButton() {
   })
 
   const isAdmin = userAddress?.toLowerCase() === ADMIN_ADDRESS.toLowerCase()
-  const { writeContractAsync } = useWriteContract()
+  if (!isAdmin) return null
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -28,8 +26,6 @@ export function MintButton() {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
-
-  if (!isAdmin) return null
 
   const handleMint = async () => {
     if (!userAddress) {
@@ -43,58 +39,16 @@ export function MintButton() {
       return
     }
 
-    try {
-      const uri = `ipfs://your-metadata-link-for-${title
-        .replace(/\s+/g, '-')
-        .toLowerCase()}`
-      const normalizedPrice = price.replace(',', '.')
-      const parsedPrice = parseEther(normalizedPrice)
+    const hash = await mintNFT(
+      userAddress,
+      title,
+      price,
+      (window as any).refetchNFTs
+    )
 
-      toast.loading('Minting NFT...', { id: 'mint' })
-
-      const mintHash = await writeContractAsync({
-        address: contractAddress,
-        abi,
-        functionName: 'mintTo',
-        args: [userAddress, uri],
-      })
-      setTxHash(mintHash)
-
-      const mintReceipt = await publicClient.waitForTransactionReceipt({
-        hash: mintHash,
-      })
-
-      toast.success('NFT minted successfully!', { id: 'mint' })
-
-      const transferLog = mintReceipt.logs.find(
-        (l: any) =>
-          Array.isArray(l.topics) &&
-          l.topics.length > 3 &&
-          typeof l.topics[0] === 'string' &&
-          l.topics[0].includes('ddf252ad')
-      )
-
-      const tokenId = transferLog?.topics?.[3]
-        ? BigInt(transferLog.topics[3] as string)
-        : 1n
-
-      console.log('Minted tokenId:', tokenId.toString())
-
-      toast.loading('Setting token price...', { id: 'price' })
-      const priceHash = await writeContractAsync({
-        address: contractAddress,
-        abi,
-        functionName: 'setTokenPrice',
-        args: [tokenId, parsedPrice],
-      })
-
-      await publicClient.waitForTransactionReceipt({ hash: priceHash })
-      toast.success('Price set successfully!', { id: 'price' })
-
+    if (hash) {
+      setTxHash(hash)
       setFormData({ title: '', description: '', image: '', price: '' })
-    } catch (err: any) {
-      console.error('Transaction error:', err)
-      toast.error('Mint failed', { id: 'mint' })
     }
   }
 
