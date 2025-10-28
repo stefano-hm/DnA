@@ -13,7 +13,9 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.5;
-  transition: background-color var(--transition-slow), color var(--transition-slow);
+  transition:
+    background-color var(--transition-slow),
+    color var(--transition-slow);
   min-height: 100vh;
 }
 
@@ -32,7 +34,9 @@ button {
   border-radius: 0.5rem;
   padding: var(--space-xs) var(--space-sm);
   font-family: inherit;
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 button:hover {
   background-color: var(--color-text);
@@ -49,7 +53,9 @@ textarea {
   border-radius: 0.5rem;
   background-color: var(--color-card-bg);
   color: var(--color-text);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 input:focus,
 textarea:focus {

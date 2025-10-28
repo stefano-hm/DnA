@@ -4,7 +4,7 @@ import { useNFTs } from '../../hooks/useNFTs'
 import styles from './Store.module.css'
 
 export default function Store() {
-  const { nfts, isLoading, error } = useNFTs()
+  const { nfts, isLoading, error, refetch } = useNFTs()
 
   return (
     <div className={styles.container}>
@@ -29,6 +29,7 @@ export default function Store() {
             description={nft.description}
             price={nft.price}
             owner={nft.owner}
+            refetch={refetch}
           />
         ))}
       </div>

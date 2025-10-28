@@ -6,7 +6,9 @@
   padding: var(--space-lg) var(--space-sm);
   background-color: var(--color-bg);
   min-height: 100vh;
-  transition: background-color var(--transition-slow), color var(--transition-slow);
+  transition:
+    background-color var(--transition-slow),
+    color var(--transition-slow);
 }
 
 .title {
@@ -26,7 +28,9 @@
   border-radius: 0.75rem;
   background-color: var(--color-card-bg);
   box-shadow: 0 2px 10px var(--color-shadow);
-  transition: background-color var(--transition-slow), border-color var(--transition-slow);
+  transition:
+    background-color var(--transition-slow),
+    border-color var(--transition-slow);
 }
 
 .grid {
@@ -54,7 +58,6 @@
   font-size: 0.95rem;
   text-align: center;
 }
-
 
 @media (max-width: 768px) {
   .mintSection {

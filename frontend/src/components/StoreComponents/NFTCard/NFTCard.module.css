@@ -7,8 +7,11 @@
   border-radius: 1rem;
   box-shadow: 0 4px 12px var(--color-shadow);
   overflow: hidden;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
-    background-color var(--transition-slow), border-color var(--transition-slow);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-slow),
+    border-color var(--transition-slow);
 }
 
 .card:hover {
@@ -64,7 +67,8 @@
   border-radius: 0.5rem;
   padding: 0.6rem 1rem;
   font-weight: 500;
-  transition: background-color var(--transition-fast),
+  transition:
+    background-color var(--transition-fast),
     transform var(--transition-fast);
 }
 
@@ -75,7 +79,6 @@
 .buyButton:active {
   transform: scale(0.97);
 }
-
 
 @media (max-width: 768px) {
   .image {

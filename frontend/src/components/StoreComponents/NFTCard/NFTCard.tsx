@@ -1,15 +1,7 @@
 import { useAccount } from 'wagmi'
-import { useBuyNFT } from '../../../hooks/useBuyNFT'
+import { BuyButton } from '../BuyButton/BuyButton'
+import type { NFTCardProps } from '../../../types/nft'
 import styles from './NFTCard.module.css'
-
-type NFTCardProps = {
-  tokenId: number
-  image: string
-  name: string
-  description: string
-  price: string
-  owner: string
-}
 
 export function NFTCard({
   tokenId,
@@ -18,18 +10,10 @@ export function NFTCard({
   description,
   price,
   owner,
+  refetch,
 }: NFTCardProps) {
   const { address: userAddress } = useAccount()
-  const { buyNFT } = useBuyNFT()
   const isOwner = userAddress?.toLowerCase() === owner.toLowerCase()
-
-  const handleBuy = async () => {
-    if (!userAddress) {
-      alert('Connect your wallet first')
-      return
-    }
-    await buyNFT(tokenId, price)
-  }
 
   return (
     <div className={styles.card}>
@@ -46,9 +30,7 @@ export function NFTCard({
       </p>
 
       {!isOwner && (
-        <button onClick={handleBuy} className={styles.buyButton}>
-          Buy Now
-        </button>
+        <BuyButton tokenId={tokenId} price={price} refetch={refetch} />
       )}
     </div>
   )

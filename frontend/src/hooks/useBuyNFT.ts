@@ -1,9 +1,9 @@
-import { useWriteContract, usePublicClient } from 'wagmi'
+import { useWriteContract, usePublicClient, useWatchContractEvent } from 'wagmi'
 import toast from 'react-hot-toast'
 import { parseEther } from 'viem'
 import { contractsConfig } from '../contracts/contractsConfig'
 
-export function useBuyNFT() {
+export function useBuyNFT(refetch?: () => void) {
   const { address: contractAddress, abi } = contractsConfig.DnANFT
   const publicClient = usePublicClient()!
   const { writeContractAsync } = useWriteContract()
@@ -20,14 +20,10 @@ export function useBuyNFT() {
         value: parseEther(price),
       })
 
+      toast.loading('Waiting for confirmation...', { id: 'buy' })
       await publicClient.waitForTransactionReceipt({ hash: txHash })
 
       toast.success('NFT purchased successfully!', { id: 'buy' })
-
-      if (typeof window !== 'undefined' && (window as any).refetchNFTs) {
-        ;(window as any).refetchNFTs()
-      }
-
       return txHash
     } catch (err) {
       console.error('Buy transaction error:', err)
@@ -35,6 +31,16 @@ export function useBuyNFT() {
       return null
     }
   }
+
+  useWatchContractEvent({
+    address: contractAddress,
+    abi,
+    eventName: 'Purchased',
+    onLogs: logs => {
+      console.log('Purchased event detected:', logs)
+      if (refetch) refetch()
+    },
+  })
 
   return { buyNFT }
 }
