@@ -11,8 +11,11 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@helia/unixfs": "^6.0.2",
     "@rainbow-me/rainbowkit": "^2.2.9",
     "ethers": "^6.15.0",
+    "helia": "^6.0.7",
+    "multiformats": "^13.4.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",

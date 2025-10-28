@@ -25,6 +25,8 @@ export default function Store() {
             key={nft.tokenId}
             tokenId={nft.tokenId}
             image={nft.image}
+            name={nft.name}
+            description={nft.description}
             price={nft.price}
             owner={nft.owner}
           />

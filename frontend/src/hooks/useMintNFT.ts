@@ -10,28 +10,29 @@ export function useMintNFT() {
 
   const mintNFT = async (
     userAddress: string,
-    title: string,
+    _title: string,
+    _description: string,
+    metadataURI: string,
     price: string,
     refetchNFTs?: () => void
   ) => {
     try {
-      const uri = `ipfs://your-metadata-link-for-${title
-        .replace(/\s+/g, '-')
-        .toLowerCase()}`
+      toast.loading('Minting NFT...', { id: 'mint' })
+
       const normalizedPrice = price.replace(',', '.')
       const parsedPrice = parseEther(normalizedPrice)
 
-      toast.loading('Minting NFT...', { id: 'mint' })
       const mintHash = await writeContractAsync({
         address: contractAddress,
         abi,
         functionName: 'mintTo',
-        args: [userAddress, uri],
+        args: [userAddress, metadataURI],
       })
 
       const mintReceipt = await publicClient.waitForTransactionReceipt({
         hash: mintHash,
       })
+
       toast.success('NFT minted successfully!', { id: 'mint' })
 
       const transferLog = mintReceipt.logs.find(
@@ -58,6 +59,7 @@ export function useMintNFT() {
       toast.success('Price set successfully!', { id: 'price' })
 
       if (refetchNFTs) refetchNFTs()
+
       return mintHash
     } catch (err) {
       console.error('Mint error:', err)
