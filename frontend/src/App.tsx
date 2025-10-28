@@ -13,7 +13,7 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <main style={{ padding: '2rem' }}>
+      <main>
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/" element={<Home />} />

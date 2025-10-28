@@ -91,5 +91,12 @@ export function useNFTs() {
     onLogs: () => refetch(),
   })
 
+  useWatchContractEvent({
+    address: contractAddress,
+    abi,
+    eventName: 'PriceSet',
+    onLogs: () => refetch(),
+  })
+
   return { nfts, isLoading, error, refetch }
 }

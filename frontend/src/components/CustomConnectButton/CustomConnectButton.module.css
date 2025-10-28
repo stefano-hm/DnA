@@ -1,0 +1,19 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  transition: all var(--transition-fast);
+}
+
+
+@media (min-width: 768px) {
+  .wrapper {
+    padding: 0;
+  }
+}
+
+
+:global(.rainbowkit-connect-button) {
+  font-family: var(--font-family);
+}

@@ -40,59 +40,45 @@ export function MintButton() {
   }
 
   const handleMint = async () => {
+    const { title, description, imageFile, price } = formData
+    if (!userAddress) return toast.error('Connect your wallet first')
+    if (!title || !description || !imageFile || !price)
+      return toast.error('Please fill in all fields')
+
+    const t = (msg: string, id: string) => toast.loading(msg, { id })
+
     try {
-      if (!userAddress) {
-        toast.error('Connect your wallet first')
-        return
-      }
-
-      const { title, description, imageFile, price } = formData
-      if (!title || !description || !imageFile || !price) {
-        toast.error('Please fill in all fields')
-        return
-      }
-
-      toast.loading('Uploading to IPFS...')
-
+      t('Uploading to IPFS...', 'upload')
       const imageCid = await uploadImageToIPFS(imageFile)
       const imageURI = `ipfs://${imageCid}`
-
       const metadataURI = await createAndUploadMetadata({
         name: title,
         description,
         imageURI,
       })
+      toast.success('Files uploaded successfully', { id: 'upload' })
 
-      toast.dismiss()
-      toast.loading('Minting NFT...')
-
+      t('Minting NFT on chain...', 'mint')
       const hash = await mintNFT(
         userAddress,
-        title,
-        description,
         metadataURI,
         price,
         (window as any).refetchNFTs
       )
-
-      toast.dismiss()
+      toast.success('NFT minted successfully!', { id: 'mint' })
 
       if (hash) {
         setTxHash(hash)
         setFormData({ title: '', description: '', imageFile: null, price: '' })
 
         const gatewayLink = cidToGatewayUrl(metadataURI.replace('ipfs://', ''))
-
-        toast.success('NFT minted successfully! Metadata pinned to IPFS.', {
-          duration: 6000,
-        })
-
         console.log('Metadata Gateway URL:', gatewayLink)
+
+        toast.success('Price set successfully!', { duration: 4000 })
       }
     } catch (err) {
-      toast.dismiss()
       console.error(err)
-      toast.error('Mint failed — check console for details')
+      toast.error('Mint failed — check console for details', { id: 'mint' })
     }
   }
 
@@ -115,14 +101,12 @@ export function MintButton() {
         onChange={handleChange}
         className={styles.textarea}
       />
-
       <input
         type="file"
         accept="image/*"
         onChange={handleFileChange}
         className={styles.input}
       />
-
       <input
         type="text"
         name="price"

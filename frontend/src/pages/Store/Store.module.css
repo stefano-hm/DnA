@@ -1,65 +1,71 @@
 .container {
-  text-align: center;
-  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-sm);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  transition: background-color var(--transition-slow), color var(--transition-slow);
 }
 
 .title {
-  font-size: 1.8rem;
-  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: var(--space-sm);
+  letter-spacing: 0.5px;
 }
 
 .mintSection {
-  margin-bottom: 3rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 2rem;
+  width: 100%;
+  max-width: 600px;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background-color: var(--color-card-bg);
+  box-shadow: 0 2px 10px var(--color-shadow);
+  transition: background-color var(--transition-slow), border-color var(--transition-slow);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  justify-items: center;
-}
-
-.card {
-  width: 250px;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.image {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-md);
   width: 100%;
-  border-radius: 8px;
+  margin-top: var(--space-md);
 }
 
-.cardTitle {
-  font-size: 1.1rem;
-  margin-top: 0.8rem;
-  margin-bottom: 0.5rem;
-}
-
-.price {
-  color: #333;
+.error {
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 0.5rem;
+  text-align: center;
   font-weight: 500;
-  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 400px;
 }
 
-.buyButton {
-  padding: 0.6rem 1.2rem;
-  background-color: #000;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
+.container p {
+  color: var(--color-text);
+  opacity: 0.8;
+  font-size: 0.95rem;
+  text-align: center;
 }
 
-.buyButton:hover {
-  opacity: 0.85;
+
+@media (max-width: 768px) {
+  .mintSection {
+    padding: var(--space-sm);
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .grid {
+    gap: var(--space-sm);
+  }
 }
