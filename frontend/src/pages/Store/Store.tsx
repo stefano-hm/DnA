@@ -1,4 +1,4 @@
-import { MintButton } from '../../components/StoreComponents/MintButton/MintButton'
+import { MintForm } from '../../components/StoreComponents/MintForm/MintForm'
 import { NFTCard } from '../../components/StoreComponents/NFTCard/NFTCard'
 import { useNFTs } from '../../hooks/useNFTs'
 import styles from './Store.module.css'
@@ -11,7 +11,7 @@ export default function Store() {
       <h2 className={styles.title}>DnA NFT Store</h2>
 
       <div className={styles.mintSection}>
-        <MintButton />
+        <MintForm onMintSuccess={() => refetch()} />
       </div>
 
       {isLoading && <p>Loading NFTs from blockchain...</p>}

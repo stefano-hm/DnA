@@ -16,3 +16,19 @@ export type BuyButtonProps = {
   price: string
   refetch?: () => void
 }
+
+export type FormDataType = {
+  title: string
+  description: string
+  imageFile: File | null
+  price: string
+}
+
+export type MintFormProps = {
+  onMintSuccess?: (hash: string) => void
+}
+
+export type MintButtonProps = {
+  formData: FormDataType
+  onSuccess?: (hash: string) => void
+}
