@@ -1,0 +1,42 @@
+.categories {
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.heading {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 3rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  justify-items: center;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  background-color: #fafafa;
+}
+
+.card:hover {
+  border-color: #000;
+  background-color: #f0f0f0;
+  transform: translateY(-3px);
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #000;
+}

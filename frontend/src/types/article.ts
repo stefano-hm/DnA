@@ -1,7 +1,7 @@
 export interface Article {
   title: string
   subtitle?: string
-  category?: string
+  category: string
   date: string
   author?: string
   level?: string

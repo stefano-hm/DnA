@@ -1,0 +1,24 @@
+.section {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.carousel {
+  margin-top: var(--space-md);
+  display: flex;
+  gap: var(--space-md);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: var(--space-sm);
+}
+
+.carousel > * {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  width: min(320px, 85vw);
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}

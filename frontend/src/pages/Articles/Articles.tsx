@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { loadArticles } from '../../utils/loadArticles'
 import type { Article } from '../../types/article'
-import { ArticleCard } from '../../components/ArticlesComponents/ArticleCard/ArticleCard'
+import { CategorySection } from '../../components/ArticlesComponents/CategorySection/CategorySection'
 import styles from './Articles.module.css'
 
 export default function ArticlesPage() {
@@ -15,18 +15,19 @@ export default function ArticlesPage() {
     fetchArticles()
   }, [])
 
+  const grouped = articles.reduce<Record<string, Article[]>>((acc, a) => {
+    const key = a.category || 'Uncategorized'
+    if (!acc[key]) acc[key] = []
+    acc[key].push(a)
+    return acc
+  }, {})
+
   return (
     <section className={styles.container}>
       <h1 className={styles.title}>All Articles</h1>
-      <div className={styles.grid}>
-        {articles.length === 0 ? (
-          <p className={styles.empty}>No articles found.</p>
-        ) : (
-          articles.map(article => (
-            <ArticleCard key={article.slug} article={article} />
-          ))
-        )}
-      </div>
+      {Object.entries(grouped).map(([category, group]) => (
+        <CategorySection key={category} category={category} articles={group} />
+      ))}
     </section>
   )
 }

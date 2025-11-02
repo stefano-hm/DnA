@@ -10,6 +10,7 @@ const Store = lazy(() => import('./pages/Store/Store'))
 const MyNFTs = lazy(() => import('./pages/MyNFTs/MyNFTs'))
 const NFTDetail = lazy(() => import('./pages/NFTDetail/NFTDetail'))
 const About = lazy(() => import('./pages/About/About'))
+const Category = lazy(() => import('./pages/Category/Category'))
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/my-nfts" element={<MyNFTs />} />
             <Route path="/nft/:id" element={<NFTDetail />} />
             <Route path="/about" element={<About />} />
+            <Route path="articles/category/:slug" element={<Category />} />
           </Routes>
         </Suspense>
       </main>
