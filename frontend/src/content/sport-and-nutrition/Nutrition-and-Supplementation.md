@@ -1,7 +1,7 @@
 ---
 title: 'Precision Nutrition and Supplementation for Optimized Fitness Adaptation'
 subtitle: 'Evidence-Based Protocols for Modulating Exercise Performance, Recovery, and Body Composition'
-category: 'Sport and Nutrition'
+category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
 level: 'base'

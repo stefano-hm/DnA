@@ -1,0 +1,7 @@
+.page {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  padding: var(--space-lg) var(--space-md);
+  font-family: var(--font-family);
+}

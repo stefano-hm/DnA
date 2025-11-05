@@ -1,47 +1,45 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { loadArticles } from '../../../utils/loadArticles'
+import type { Article } from '../../../types/article'
 import styles from './FeaturedArticles.module.css'
 
-type Article = {
-  title: string
-  excerpt: string
-  image: string
-  path: string
-}
-
-const featuredArticles: Article[] = [
-  {
-    title: 'How Light Shapes the Circadian Rhythm',
-    excerpt:
-      'An in-depth look at how natural and artificial light exposure affects our sleep, alertness, and hormonal balance.',
-    image: '/images/circadian-light.jpg',
-    path: '/articles/sleep/how-light-affects-circadian-rhythm',
-  },
-  {
-    title: 'Nutrition and Cognitive Function',
-    excerpt:
-      'Exploring how micronutrients and dietary patterns influence brain performance, attention, and memory.',
-    image: '/images/nutrition-brain.jpg',
-    path: '/articles/nutrition/nutrition-and-cognitive-function',
-  },
-]
-
 export function FeaturedArticles() {
+  const [featured, setFeatured] = useState<Article[]>([])
+
+  useEffect(() => {
+    const fetch = async () => {
+      const all = await loadArticles()
+
+      setFeatured(all.slice(0, 2))
+    }
+    fetch()
+  }, [])
+
+  if (featured.length === 0) {
+    return null
+  }
+
   return (
     <section className={styles.featured}>
       <h2 className={styles.heading}>Featured Articles</h2>
       <div className={styles.grid}>
-        {featuredArticles.map(article => (
-          <Link key={article.path} to={article.path} className={styles.card}>
+        {featured.map(article => (
+          <Link
+            key={article.slug}
+            to={`/articles/${article.slug}`}
+            className={styles.card}
+          >
             <div className={styles.imageWrapper}>
-              <img
-                src={article.image}
-                alt={article.title}
-                className={styles.image}
-              />
+              <div className={styles.imageFallback} />
             </div>
             <div className={styles.content}>
               <h3 className={styles.title}>{article.title}</h3>
-              <p className={styles.excerpt}>{article.excerpt}</p>
+              {article.subtitle ? (
+                <p className={styles.excerpt}>{article.subtitle}</p>
+              ) : (
+                <p className={styles.excerpt}>Read the full article →</p>
+              )}
             </div>
           </Link>
         ))}

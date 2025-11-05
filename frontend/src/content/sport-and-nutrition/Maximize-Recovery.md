@@ -1,7 +1,7 @@
 ---
 title: 'Accelerating Adaptation: Scientific Strategies for Maximizing Post-Exercise Recovery'
 subtitle: 'The Integrated Modalities of Physiological Restoration for Enhanced Performance and Hypertrophy'
-category: 'Sport and Nutrition'
+category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
 level: 'base'

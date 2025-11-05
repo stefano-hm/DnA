@@ -1,7 +1,7 @@
 ---
 title: 'The Neurobiological and Physiological Control of Respiration for Enhanced Performance and Affective State'
 subtitle: 'The Medullary Pacemaker and Behavioral Modulation of the Autonomic Nervous System'
-category: 'Sport and Nutrition'
+category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
 level: 'base'

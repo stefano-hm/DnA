@@ -1,7 +1,7 @@
 ---
 title: 'Ergogenic and Chronobiological Modulations to Accelerate Musculoskeletal Adaptation'
 subtitle: ''
-category: 'Sport and Nutrition'
+category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
 level: 'base'

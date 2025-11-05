@@ -5,24 +5,36 @@ import type { Article } from '../../types/article'
 import { ArticleCard } from '../../components/ArticlesComponents/ArticleCard/ArticleCard'
 import styles from './Category.module.css'
 
-export default function CategoryPage() {
+export default function Category() {
   const { slug } = useParams()
   const [articles, setArticles] = useState<Article[]>([])
   const [categoryName, setCategoryName] = useState<string>('')
 
+  const deslugifyCategory = (slug: string) =>
+    slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+
+  const slugifyCategory = (name: string) =>
+    name
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+
   useEffect(() => {
     const fetchArticles = async () => {
+      if (!slug) return
+
       const all = await loadArticles()
 
-      const category =
-        slug?.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) || ''
+      const filtered = all.filter(a => slugifyCategory(a.category) === slug)
 
-      const filtered = all.filter(
-        a => a.category.toLowerCase() === category.toLowerCase()
-      )
-
-      setCategoryName(category)
       setArticles(filtered)
+
+      if (filtered.length > 0) {
+        setCategoryName(filtered[0].category)
+      } else {
+        setCategoryName(deslugifyCategory(slug))
+      }
     }
 
     fetchArticles()

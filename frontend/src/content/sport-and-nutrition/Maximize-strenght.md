@@ -1,7 +1,7 @@
 ---
 title: 'Mechanistic Protocols for Maximizing Strength and Muscular Hypertrophy'
 subtitle: 'The Interplay of Neural Drive, Mechanical Tension, and Training Specificity'
-category: 'Sport and Nutrition'
+category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
 level: 'base'

@@ -1,7 +1,7 @@
 ---
 title: 'The Metabolic and Training Architectures for Concurrent Endurance Development and Adipose Tissue Loss'
 subtitle: 'Evidence-Based Programming and Substrate Utilization Strategies for Hybrid Fitness'
-category: 'Sport and Nutrition'
+category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
 level: 'base'

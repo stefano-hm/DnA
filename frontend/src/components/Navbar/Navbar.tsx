@@ -9,6 +9,7 @@ export function Navbar() {
         <Link to="/">Home</Link>
         <Link to="/articles">Articles</Link>
         <Link to="/store">Store</Link>
+        <Link to="/auction-house">Auction House</Link>
         <Link to="/my-nfts">My NFTs</Link>
         <Link to="/about">About</Link>
       </div>

@@ -1,7 +1,7 @@
 ---
 title: 'Neuromuscular and Biomechanical Principles for Enhanced Musculoskeletal Flexibility'
 subtitle: 'Evidence-Based Protocols for Static, Dynamic, and Proprioceptive Neuromuscular Facilitation (PNF) Stretching'
-category: 'Sport and Nutrition'
+category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
 level: 'base'

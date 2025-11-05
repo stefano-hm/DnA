@@ -1,7 +1,7 @@
 ---
 title: 'The Pillars of Longevity: An Integrated Approach to Exercise, Metabolic Health, and Hormonal Homeostasis'
 subtitle: 'Protocols for Decelerating Biological Aging and Maximizing Healthspan'
-category: 'Sport and Nutrition'
+category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
 level: 'base'
