@@ -3,25 +3,14 @@ import { useReadContract } from 'wagmi'
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import { cidToGatewayUrl } from '../../../services/ipfsService'
 import { AuctionCard } from '../AuctionCard/AuctionCard'
+import { EndedAuctions } from '../EndedAuctions/EndedAuctions'
 import { useWatchBids } from '../../../hooks/useWatchBids'
+import type { AuctionItem } from '../../../types/auction'
 import styles from './AuctionList.module.css'
-
-type Auction = {
-  id: number
-  tokenId: number
-  startingBid: string
-  highestBid: string
-  endTime: number
-  active: boolean
-  highestBidder: string
-  nft: string
-  title?: string
-  image?: string
-}
 
 export function AuctionList() {
   const { address: contractAddress, abi } = contractsConfig.DnAAuctionHouse
-  const [auctions, setAuctions] = useState<Auction[]>([])
+  const [auctions, setAuctions] = useState<AuctionItem[]>([])
 
   const { data: auctionCount } = useReadContract({
     address: contractAddress,
@@ -51,13 +40,12 @@ export function AuctionList() {
         provider
       )
 
-      const list: Auction[] = []
+      const list: AuctionItem[] = []
 
       for (let i = 1; i <= Number(auctionCount); i++) {
         const a = await auctionContract.auctions(i)
-        if (!a.active) continue
 
-        const baseAuction: Auction = {
+        const baseAuction: AuctionItem = {
           id: i,
           nft: a.nft,
           tokenId: Number(a.tokenId),
@@ -76,7 +64,6 @@ export function AuctionList() {
           )
 
           const tokenUri: string = await nftContract.tokenURI(a.tokenId)
-
           const metadataUrl = tokenUri.startsWith('ipfs://')
             ? cidToGatewayUrl(tokenUri.replace('ipfs://', ''))
             : tokenUri
@@ -112,25 +99,53 @@ export function AuctionList() {
   }, [auctionCount, contractAddress, abi])
 
   if (!auctionCount) return <p>Loading auctions...</p>
-  if (auctions.length === 0) return <p>No active auctions found.</p>
+  if (auctions.length === 0) return <p>No auctions found.</p>
+
+  const now = Math.floor(Date.now() / 1000)
+  const activeAuctions = auctions.filter(a => a.active && a.endTime > now)
+  const endedAuctions = auctions.filter(a => !a.active || a.endTime <= now)
 
   return (
-    <div className={styles.list}>
-      {auctions.map(auction => (
-        <AuctionCard
-          key={auction.id}
-          auction={{
-            id: auction.id,
-            title: auction.title || `NFT #${auction.tokenId}`,
-            image: auction.image || '/placeholder.jpg',
-            currentBid: `${auction.highestBid} ETH`,
-            startingBid: auction.startingBid,
-            highestBid: auction.highestBid,
-            endTime: auction.endTime,
-            endsIn: formatEndsIn(auction.endTime),
-          }}
-        />
-      ))}
+    <div className={styles.wrapper}>
+      <section>
+        <h2 className={styles.sectionTitle}>Active Auctions</h2>
+        <div className={styles.list}>
+          {activeAuctions.length === 0 ? (
+            <p className={styles.empty}>No active auctions.</p>
+          ) : (
+            activeAuctions.map(auction => (
+              <AuctionCard
+                key={auction.id}
+                auction={{
+                  id: auction.id,
+                  title: auction.title || `NFT #${auction.tokenId}`,
+                  image: auction.image || '/placeholder.jpg',
+                  currentBid: `${auction.highestBid} ETH`,
+                  startingBid: auction.startingBid,
+                  highestBid: auction.highestBid,
+                  highestBidder: auction.highestBidder,
+                  endTime: auction.endTime,
+                  endsIn: formatEndsIn(auction.endTime),
+                }}
+              />
+            ))
+          )}
+        </div>
+      </section>
+
+      <EndedAuctions
+        auctions={endedAuctions.map(a => ({
+          id: a.id,
+          title: a.title || `NFT #${a.tokenId}`,
+          image: a.image || '/placeholder.jpg',
+          currentBid: `${a.highestBid} ETH`,
+          startingBid: a.startingBid,
+          highestBid: a.highestBid,
+          highestBidder: a.highestBidder,
+          endTime: a.endTime,
+          endsIn: formatEndsIn(a.endTime),
+        }))}
+      />
     </div>
   )
 }

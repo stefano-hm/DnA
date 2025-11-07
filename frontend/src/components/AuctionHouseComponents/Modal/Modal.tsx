@@ -1,21 +1,26 @@
-import React from 'react'
+import { createPortal } from 'react-dom'
+import type { ModalProps } from '../../../types/ui'
 import styles from './Modal.module.css'
-
-type ModalProps = {
-  isOpen: boolean
-  onClose: () => void
-  title?: string
-  children: React.ReactNode
-}
 
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null
 
-  return (
+  const modalRoot =
+    typeof document !== 'undefined'
+      ? document.getElementById('modal-root') ||
+        (() => {
+          const div = document.createElement('div')
+          div.id = 'modal-root'
+          document.body.appendChild(div)
+          return div
+        })()
+      : null
+
+  const content = (
     <div className={styles.backdrop} onClick={onClose}>
       <div className={styles.content} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
-          {title ? <h2 className={styles.title}>{title}</h2> : null}
+          {title && <h2 className={styles.title}>{title}</h2>}
           <button
             className={styles.close}
             onClick={onClose}
@@ -28,4 +33,6 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       </div>
     </div>
   )
+
+  return modalRoot ? createPortal(content, modalRoot) : content
 }

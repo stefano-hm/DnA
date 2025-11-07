@@ -1,21 +1,28 @@
 import { useState } from 'react'
-import { useWriteContract } from 'wagmi'
-import { waitForTransactionReceipt } from '@wagmi/core'
+import { useAccount, useWriteContract } from 'wagmi'
 import toast from 'react-hot-toast'
+import { waitForTransactionReceipt } from '@wagmi/core'
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import { wagmiConfig } from '../../../wagmiConfig'
+import type { AuctionFormData } from '../../../types/auction'
 import styles from './AdminAuctionForm.module.css'
 
+const ADMIN_ADDRESS = '0xCdD94FC9056554E2D3f222515fB52829572c7095'
+
 export function AdminAuctionForm() {
+  const { address: userAddress } = useAccount()
   const { writeContractAsync } = useWriteContract()
   const { address: contractAddress, abi } = contractsConfig.DnAAuctionHouse
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<AuctionFormData>({
     nftAddress: '',
     tokenId: '',
     startingBid: '',
     duration: '',
   })
+
+  const isAdmin =
+    !!userAddress && userAddress.toLowerCase() === ADMIN_ADDRESS.toLowerCase()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -42,10 +49,9 @@ export function AdminAuctionForm() {
       })
 
       toast.loading('Creating auction...', { id: 'auctionTx' })
-
       await waitForTransactionReceipt(wagmiConfig, { hash })
-
       toast.success('Auction created successfully!', { id: 'auctionTx' })
+
       setFormData({
         nftAddress: '',
         tokenId: '',
@@ -56,6 +62,16 @@ export function AdminAuctionForm() {
       console.error(error)
       toast.error(error?.message || 'Failed to create auction')
     }
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className={styles.form}>
+        <p style={{ textAlign: 'center', opacity: 0.7 }}>
+          Only the admin can create new auctions.
+        </p>
+      </div>
+    )
   }
 
   return (

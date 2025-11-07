@@ -35,6 +35,12 @@
   margin-bottom: var(--space-sm);
 }
 
+.winner {
+  font-size: 0.9rem;
+  color: var(--color-accent);
+  margin-bottom: 0.3rem;
+}
+
 .info {
   margin-bottom: var(--space-md);
 }

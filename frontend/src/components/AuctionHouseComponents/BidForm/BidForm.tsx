@@ -4,15 +4,8 @@ import { waitForTransactionReceipt } from '@wagmi/core'
 import toast from 'react-hot-toast'
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import { wagmiConfig } from '../../../wagmiConfig'
+import type { BidFormProps } from '../../../types/auction'
 import styles from './BidForm.module.css'
-
-interface BidFormProps {
-  auctionId: number
-  startingBid: string
-  highestBid: string
-  endTime: number
-  onClose: () => void
-}
 
 export function BidForm({
   auctionId,
