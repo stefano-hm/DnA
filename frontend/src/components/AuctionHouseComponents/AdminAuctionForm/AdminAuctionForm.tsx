@@ -7,7 +7,7 @@ import { wagmiConfig } from '../../../wagmiConfig'
 import type { AuctionFormData } from '../../../types/auction'
 import styles from './AdminAuctionForm.module.css'
 
-const ADMIN_ADDRESS = '0xCdD94FC9056554E2D3f222515fB52829572c7095'
+const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS
 
 export function AdminAuctionForm() {
   const { address: userAddress } = useAccount()

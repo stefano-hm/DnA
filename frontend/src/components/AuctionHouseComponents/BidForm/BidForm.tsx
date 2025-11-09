@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useWriteContract } from 'wagmi'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import toast from 'react-hot-toast'
+import { parseEther } from 'ethers'
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import { wagmiConfig } from '../../../wagmiConfig'
 import type { BidFormProps } from '../../../types/auction'
@@ -30,7 +31,12 @@ export function BidForm({
       return
     }
 
-    if (!bidValue || bidValue <= minRequired) {
+    if (!amount || isNaN(bidValue)) {
+      toast.error('Enter a valid amount')
+      return
+    }
+
+    if (bidValue <= minRequired) {
       toast.error(`Bid must be higher than ${minRequired} ETH`)
       return
     }
@@ -43,10 +49,11 @@ export function BidForm({
         abi,
         functionName: 'bid',
         args: [BigInt(auctionId)],
-        value: BigInt(Math.floor(bidValue * 1e18)),
+        value: parseEther(amount), 
       })
 
       await waitForTransactionReceipt(wagmiConfig, { hash })
+
       toast.success('Bid placed successfully!', { id: 'bidTx' })
       setAmount('')
       onClose()
@@ -66,11 +73,11 @@ export function BidForm({
         Amount (ETH)
         <input
           type="number"
-          step="0.001"
+          step="0.0001"
           value={amount}
           onChange={e => setAmount(e.target.value)}
           className={styles.input}
-          placeholder={`${minBid + 0.001} or higher`}
+          placeholder={`${(minBid + 0.0001).toFixed(4)} or higher`}
           disabled={isExpired}
         />
       </label>

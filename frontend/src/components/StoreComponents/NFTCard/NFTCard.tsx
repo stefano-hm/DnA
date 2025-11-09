@@ -13,25 +13,45 @@ export function NFTCard({
   refetch,
 }: NFTCardProps) {
   const { address: userAddress } = useAccount()
+
   const isOwner = userAddress?.toLowerCase() === owner.toLowerCase()
+  const isSold =
+    owner.toLowerCase() !== '0x0000000000000000000000000000000000000000' &&
+    !isOwner
 
   return (
-    <div className={styles.card}>
-      <img
-        src={image}
-        alt={name || `NFT ${tokenId}`}
-        className={styles.image}
-      />
+    <div className={`${styles.card} ${isSold ? styles.sold : ''}`}>
+      <div className={styles.imageWrapper}>
+        <img
+          src={image}
+          alt={name || `NFT ${tokenId}`}
+          className={styles.image}
+        />
+        {isSold && <span className={styles.badge}>SOLD</span>}
+        {isOwner && <span className={styles.ownedBadge}>OWNED</span>}
+      </div>
+
       <h3 className={styles.cardTitle}>{name || `Token #${tokenId}`}</h3>
       {description && <p className={styles.description}>{description}</p>}
-      <p className={styles.price}>{price} ETH</p>
+
+      {!isSold && !isOwner && <p className={styles.price}>{price} ETH</p>}
+
       <p className={styles.owner}>
         Owner: {owner.slice(0, 6)}...{owner.slice(-4)}
       </p>
 
-      {!isOwner && (
-        <BuyButton tokenId={tokenId} price={price} refetch={refetch} />
-      )}
+      {!isOwner &&
+        (isSold ? (
+          <button className={styles.disabledButton} disabled>
+            Sold Out
+          </button>
+        ) : (
+          price && (
+            <BuyButton tokenId={tokenId} price={price} refetch={refetch} />
+          )
+        ))}
+
+      {isOwner && <p className={styles.ownerTag}>You own this NFT</p>}
     </div>
   )
 }

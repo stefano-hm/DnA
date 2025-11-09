@@ -3,7 +3,7 @@ import { AuctionList } from '../../components/AuctionHouseComponents/AuctionList
 import { AdminAuctionForm } from '../../components/AuctionHouseComponents/AdminAuctionForm/AdminAuctionForm'
 import styles from './AuctionHouse.module.css'
 
-export default function AuctionPage() {
+export default function AuctionHouse() {
   return (
     <div className={styles.page}>
       <AuctionHeader />

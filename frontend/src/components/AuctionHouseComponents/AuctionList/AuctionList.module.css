@@ -15,3 +15,9 @@
   opacity: 0.6;
   text-align: center;
 }
+
+.list {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}

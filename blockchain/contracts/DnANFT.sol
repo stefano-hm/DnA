@@ -90,4 +90,33 @@ contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
       count++;
     }
   }
+
+  function getOwnedNFTs(
+    address user
+  ) external view returns (uint256[] memory ids, string[] memory uris, uint256[] memory prices) {
+    uint256 total = allTokenIds.length;
+    uint256 ownedCount = 0;
+
+    for (uint256 i = 0; i < total; i++) {
+      uint256 id = allTokenIds[i];
+      if (ownerOf(id) == user) {
+        ownedCount++;
+      }
+    }
+
+    ids = new uint256[](ownedCount);
+    uris = new string[](ownedCount);
+    prices = new uint256[](ownedCount);
+
+    uint256 index = 0;
+    for (uint256 i = 0; i < total; i++) {
+      uint256 id = allTokenIds[i];
+      if (ownerOf(id) == user) {
+        ids[index] = id;
+        uris[index] = tokenURI(id);
+        prices[index] = tokenPrice[id];
+        index++;
+      }
+    }
+  }
 }

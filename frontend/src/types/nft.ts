@@ -4,7 +4,7 @@ export type NFTItem = {
   description: string
   image: string
   owner: string
-  price: string
+  price?: string
 }
 
 export type NFTCardProps = NFTItem & {

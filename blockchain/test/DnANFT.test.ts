@@ -80,4 +80,39 @@ describe("DnANFT", function () {
 
     expect(await nft.tokenPrice(1)).to.equal(price);
   });
+
+  it("should return only NFTs owned by the given address via getOwnedNFTs", async function () {
+    const [owner, admin, other] = await ethers.getSigners();
+    const DnANFT = await ethers.getContractFactory("DnANFT");
+    const nft = await DnANFT.deploy("DnA Editorials", "DNA");
+    await nft.waitForDeployment();
+
+    await nft.connect(owner).setAdmin(admin.address, true);
+
+    await nft.connect(admin).mintTo(owner.address, "ipfs://token1");
+    await nft.connect(admin).mintTo(owner.address, "ipfs://token2");
+    await nft.connect(admin).mintTo(other.address, "ipfs://token3");
+
+    const [idsOwner, urisOwner, pricesOwner] = await nft.getOwnedNFTs(owner.address);
+    expect(idsOwner.length).to.equal(2);
+    expect(urisOwner[0]).to.equal("ipfs://token1");
+    expect(urisOwner[1]).to.equal("ipfs://token2");
+
+    expect(pricesOwner[0]).to.equal(0);
+
+    const [idsOther, urisOther, pricesOther] = await nft.getOwnedNFTs(other.address);
+    expect(idsOther.length).to.equal(1);
+    expect(urisOther[0]).to.equal("ipfs://token3");
+    expect(pricesOther[0]).to.equal(0);
+
+    await nft
+      .connect(owner)
+      ["safeTransferFrom(address,address,uint256)"](owner.address, other.address, 1);
+
+    const [idsOwnerAfter] = await nft.getOwnedNFTs(owner.address);
+    expect(idsOwnerAfter.length).to.equal(1);
+
+    const [idsOtherAfter] = await nft.getOwnedNFTs(other.address);
+    expect(idsOtherAfter.length).to.equal(2);
+  });
 });

@@ -1,16 +1,19 @@
 import { useState } from 'react'
-import { useAccount } from 'wagmi'
+import { useAccount, useReadContract } from 'wagmi'
 import styles from './AuctionCard.module.css'
 import { Modal } from '../Modal/Modal'
 import { BidForm } from '../BidForm/BidForm'
 import { EndAuctionButton } from '../EndAuctionButton/EndAuctionButton'
 import { ClaimButton } from '../ClaimButton/ClaimButton'
+import { contractsConfig } from '../../../contracts/contractsConfig'
 import type { AuctionCardProps } from '../../../types/auction'
 
-const ADMIN_ADDRESS = '0xCdD94FC9056554E2D3f222515fB52829572c7095'
+const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS
 
 export function AuctionCard({ auction }: AuctionCardProps) {
   const [isBidOpen, setIsBidOpen] = useState(false)
+  const [claimedLocal, setClaimedLocal] = useState(false)
+  const [endedLocal, setEndedLocal] = useState(false)
   const { address: userAddress } = useAccount()
 
   const isWinner =
@@ -20,6 +23,55 @@ export function AuctionCard({ auction }: AuctionCardProps) {
 
   const isAdmin =
     !!userAddress && userAddress.toLowerCase() === ADMIN_ADDRESS.toLowerCase()
+
+  const { data: onchainAuction } = useReadContract({
+    address: contractsConfig.DnAAuctionHouse.address,
+    abi: contractsConfig.DnAAuctionHouse.abi,
+    functionName: 'auctions',
+    args: [BigInt(auction.id)],
+  })
+
+  const auctionStruct = onchainAuction as
+    | {
+        nft: string
+        tokenId: bigint
+        startingBid: bigint
+        endTime: bigint
+        active: boolean
+        highestBidder: string
+        highestBid: bigint
+      }
+    | undefined
+
+  const nftAddress = auctionStruct?.nft
+  const tokenId = auctionStruct?.tokenId
+  const activeOnChain = auctionStruct?.active ?? false
+
+  const { data: ownerOnChain } = useReadContract({
+    address: nftAddress as `0x${string}` | undefined,
+    abi: contractsConfig.DnANFT.abi,
+    functionName: 'ownerOf',
+    args: tokenId ? [tokenId] : undefined,
+    query: {
+      enabled: !!nftAddress && !!tokenId,
+    },
+  })
+
+  const ownerString = ownerOnChain as string | undefined
+
+  const alreadyClaimedOnChain =
+    !!ownerString &&
+    ownerString.toLowerCase() !==
+      contractsConfig.DnAAuctionHouse.address.toLowerCase()
+
+  const shouldShowClaimButton =
+    isWinner &&
+    auction.endsIn === 'Ended' &&
+    !claimedLocal &&
+    !alreadyClaimedOnChain
+
+  const shouldShowEndButton =
+    isAdmin && auction.endsIn === 'Ended' && !endedLocal && activeOnChain
 
   return (
     <div className={styles.card}>
@@ -55,12 +107,18 @@ export function AuctionCard({ auction }: AuctionCardProps) {
           </button>
         )}
 
-        {isAdmin && auction.endsIn === 'Ended' && (
-          <EndAuctionButton auctionId={auction.id} onEnded={() => {}} />
+        {shouldShowEndButton && (
+          <EndAuctionButton
+            auctionId={auction.id}
+            onEnded={() => setEndedLocal(true)}
+          />
         )}
 
-        {isWinner && auction.endsIn === 'Ended' && (
-          <ClaimButton auctionId={auction.id} onClaimed={() => {}} />
+        {shouldShowClaimButton && (
+          <ClaimButton
+            auctionId={auction.id}
+            onClaimed={() => setClaimedLocal(true)}
+          />
         )}
       </div>
 
