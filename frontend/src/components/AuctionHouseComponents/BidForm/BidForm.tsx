@@ -49,7 +49,7 @@ export function BidForm({
         abi,
         functionName: 'bid',
         args: [BigInt(auctionId)],
-        value: parseEther(amount), 
+        value: parseEther(amount),
       })
 
       await waitForTransactionReceipt(wagmiConfig, { hash })

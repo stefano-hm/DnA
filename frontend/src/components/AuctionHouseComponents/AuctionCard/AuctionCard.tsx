@@ -45,33 +45,35 @@ export function AuctionCard({ auction }: AuctionCardProps) {
 
   const nftAddress = auctionStruct?.nft
   const tokenId = auctionStruct?.tokenId
-  const activeOnChain = auctionStruct?.active ?? false
 
   const { data: ownerOnChain } = useReadContract({
     address: nftAddress as `0x${string}` | undefined,
     abi: contractsConfig.DnANFT.abi,
     functionName: 'ownerOf',
     args: tokenId ? [tokenId] : undefined,
-    query: {
-      enabled: !!nftAddress && !!tokenId,
-    },
+    query: { enabled: !!nftAddress && !!tokenId },
   })
 
   const ownerString = ownerOnChain as string | undefined
-
   const alreadyClaimedOnChain =
     !!ownerString &&
     ownerString.toLowerCase() !==
       contractsConfig.DnAAuctionHouse.address.toLowerCase()
 
-  const shouldShowClaimButton =
-    isWinner &&
-    auction.endsIn === 'Ended' &&
-    !claimedLocal &&
-    !alreadyClaimedOnChain
+  const now = Math.floor(Date.now() / 1000)
+  const auctionExpiredByTime = auction.endTime <= now
+
+  const isActiveOnChain =
+    auctionStruct?.active === undefined ? true : auctionStruct.active
 
   const shouldShowEndButton =
-    isAdmin && auction.endsIn === 'Ended' && !endedLocal && activeOnChain
+    isAdmin && !endedLocal && auctionExpiredByTime && isActiveOnChain
+
+  const shouldShowClaimButton =
+    isWinner &&
+    !claimedLocal &&
+    !alreadyClaimedOnChain &&
+    (!isActiveOnChain || auctionExpiredByTime)
 
   return (
     <div className={styles.card}>
@@ -85,7 +87,7 @@ export function AuctionCard({ auction }: AuctionCardProps) {
       <div className={styles.content}>
         <h3 className={styles.title}>{auction.title}</h3>
 
-        {auction.endsIn === 'Ended' && auction.highestBidder && (
+        {auctionExpiredByTime && auction.highestBidder && (
           <p className={styles.winner}>
             Winner: {auction.highestBidder.slice(0, 6)}...
             {auction.highestBidder.slice(-4)}
@@ -101,7 +103,7 @@ export function AuctionCard({ auction }: AuctionCardProps) {
           </p>
         </div>
 
-        {auction.endsIn !== 'Ended' && (
+        {auction.endTime > now && (
           <button className={styles.button} onClick={() => setIsBidOpen(true)}>
             Place a Bid
           </button>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useWriteContract } from 'wagmi'
+import { useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import { waitForTransactionReceipt } from '@wagmi/core'
@@ -12,6 +13,7 @@ export function ClaimButton({ auctionId, onClaimed }: ClaimButtonProps) {
   const { address: contractAddress, abi } = contractsConfig.DnAAuctionHouse
   const [isClaiming, setIsClaiming] = useState(false)
   const [isClaimed, setIsClaimed] = useState(false)
+  const queryClient = useQueryClient()
 
   const handleClaim = async () => {
     try {
@@ -28,6 +30,8 @@ export function ClaimButton({ auctionId, onClaimed }: ClaimButtonProps) {
       })
 
       await waitForTransactionReceipt(wagmiConfig, { hash })
+
+      await queryClient.invalidateQueries()
 
       toast.success(`NFT from auction #${auctionId} successfully claimed!`, {
         id: 'claimTx',

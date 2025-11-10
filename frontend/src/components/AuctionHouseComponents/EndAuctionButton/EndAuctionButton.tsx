@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useWriteContract } from 'wagmi'
+import { useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
-import { contractsConfig } from '../../../contracts/contractsConfig'
 import { waitForTransactionReceipt } from '@wagmi/core'
+import { contractsConfig } from '../../../contracts/contractsConfig'
 import { wagmiConfig } from '../../../wagmiConfig'
 import type { EndAuctionButtonProps } from '../../../types/auction'
 import styles from './EndAuctionButton.module.css'
@@ -12,9 +13,11 @@ export function EndAuctionButton({
   onEnded,
 }: EndAuctionButtonProps) {
   const { writeContractAsync } = useWriteContract()
-  const { address: contractAddress, abi } = contractsConfig.DnAAuctionHouse
+  const queryClient = useQueryClient()
   const [isEnding, setIsEnding] = useState(false)
   const [hasEnded, setHasEnded] = useState(false)
+
+  const { address: contractAddress, abi } = contractsConfig.DnAAuctionHouse
 
   const handleEnd = async () => {
     try {
@@ -30,9 +33,9 @@ export function EndAuctionButton({
 
       await waitForTransactionReceipt(wagmiConfig, { hash })
 
-      toast.success(`Auction #${auctionId} successfully ended!`, {
-        id: 'endTx',
-      })
+      await queryClient.invalidateQueries()
+
+      toast.success(`Auction #${auctionId} ended`, { id: 'endTx' })
       setHasEnded(true)
       onEnded?.(auctionId)
     } catch (err: any) {
