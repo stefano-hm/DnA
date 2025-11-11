@@ -46,13 +46,15 @@
 }
 
 .bid,
-.timer {
+.timer,
+.winner {
   font-size: 0.95rem;
   margin-bottom: var(--space-xs);
 }
 
 .bid span,
-.timer span {
+.timer span,
+.winner span {
   font-weight: 500;
   opacity: 0.8;
 }

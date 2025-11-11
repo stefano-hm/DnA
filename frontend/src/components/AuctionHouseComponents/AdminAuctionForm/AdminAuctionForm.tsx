@@ -1,9 +1,6 @@
 import { useState } from 'react'
-import { useAccount, useWriteContract } from 'wagmi'
-import toast from 'react-hot-toast'
-import { waitForTransactionReceipt } from '@wagmi/core'
-import { contractsConfig } from '../../../contracts/contractsConfig'
-import { wagmiConfig } from '../../../wagmiConfig'
+import { useAccount } from 'wagmi'
+import { useCreateAuction } from '../../../hooks/useCreateAuction'
 import type { AuctionFormData } from '../../../types/auction'
 import styles from './AdminAuctionForm.module.css'
 
@@ -11,9 +8,7 @@ const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS
 
 export function AdminAuctionForm() {
   const { address: userAddress } = useAccount()
-  const { writeContractAsync } = useWriteContract()
-  const { address: contractAddress, abi } = contractsConfig.DnAAuctionHouse
-
+  const { createAuction } = useCreateAuction()
   const [formData, setFormData] = useState<AuctionFormData>({
     nftAddress: '',
     tokenId: '',
@@ -32,36 +27,14 @@ export function AdminAuctionForm() {
     e.preventDefault()
     const { nftAddress, tokenId, startingBid, duration } = formData
 
-    if (!nftAddress || !tokenId || !startingBid || !duration)
-      return toast.error('Please fill in all fields')
-
-    try {
-      const hash = await writeContractAsync({
-        address: contractAddress,
-        abi,
-        functionName: 'startAuction',
-        args: [
-          nftAddress,
-          BigInt(tokenId),
-          BigInt(Math.floor(Number(startingBid) * 1e18)),
-          BigInt(duration),
-        ],
-      })
-
-      toast.loading('Creating auction...', { id: 'auctionTx' })
-      await waitForTransactionReceipt(wagmiConfig, { hash })
-      toast.success('Auction created successfully!', { id: 'auctionTx' })
-
+    await createAuction(nftAddress, tokenId, startingBid, duration, () => {
       setFormData({
         nftAddress: '',
         tokenId: '',
         startingBid: '',
         duration: '',
       })
-    } catch (error: any) {
-      console.error(error)
-      toast.error(error?.message || 'Failed to create auction')
-    }
+    })
   }
 
   if (!isAdmin) {

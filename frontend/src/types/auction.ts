@@ -55,3 +55,19 @@ export type AuctionItem = {
 export type EndedAuctionsProps = {
   auctions: Auction[]
 }
+
+export type AuctionStruct = {
+  nft: string
+  tokenId: bigint
+  startingBid: bigint
+  endTime: bigint
+  active: boolean
+  highestBidder: string
+  highestBid: bigint
+}
+
+export interface WithdrawButtonProps {
+  auctionId: number
+  userAddress: string | undefined
+  onWithdrawn?: (auctionId: number) => void
+}

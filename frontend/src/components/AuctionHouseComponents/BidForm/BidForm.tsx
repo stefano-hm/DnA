@@ -1,10 +1,5 @@
 import { useState } from 'react'
-import { useWriteContract } from 'wagmi'
-import { waitForTransactionReceipt } from '@wagmi/core'
-import toast from 'react-hot-toast'
-import { parseEther } from 'ethers'
-import { contractsConfig } from '../../../contracts/contractsConfig'
-import { wagmiConfig } from '../../../wagmiConfig'
+import { usePlaceBid } from '../../../hooks/usePlaceBid'
 import type { BidFormProps } from '../../../types/auction'
 import styles from './BidForm.module.css'
 
@@ -16,56 +11,19 @@ export function BidForm({
   onClose,
 }: BidFormProps) {
   const [amount, setAmount] = useState('')
-  const { writeContractAsync } = useWriteContract()
-  const { address: contractAddress, abi } = contractsConfig.DnAAuctionHouse
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const now = Math.floor(Date.now() / 1000)
-    const bidValue = Number(amount)
-    const minRequired = Math.max(Number(startingBid), Number(highestBid))
-
-    if (endTime <= now) {
-      toast.error('This auction has already ended')
-      return
-    }
-
-    if (!amount || isNaN(bidValue)) {
-      toast.error('Enter a valid amount')
-      return
-    }
-
-    if (bidValue <= minRequired) {
-      toast.error(`Bid must be higher than ${minRequired} ETH`)
-      return
-    }
-
-    try {
-      toast.loading('Submitting bid...', { id: 'bidTx' })
-
-      const hash = await writeContractAsync({
-        address: contractAddress,
-        abi,
-        functionName: 'bid',
-        args: [BigInt(auctionId)],
-        value: parseEther(amount),
-      })
-
-      await waitForTransactionReceipt(wagmiConfig, { hash })
-
-      toast.success('Bid placed successfully!', { id: 'bidTx' })
-      setAmount('')
-      onClose()
-    } catch (err: any) {
-      console.error(err)
-      toast.error(err?.message || 'Bid failed', { id: 'bidTx' })
-    }
-  }
+  const { placeBid } = usePlaceBid()
 
   const now = Math.floor(Date.now() / 1000)
   const isExpired = endTime <= now
   const minBid = Math.max(Number(startingBid), Number(highestBid))
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await placeBid(auctionId, amount, startingBid, highestBid, endTime, () => {
+      setAmount('')
+      onClose()
+    })
+  }
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>

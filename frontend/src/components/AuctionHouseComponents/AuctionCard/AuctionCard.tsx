@@ -5,6 +5,7 @@ import { Modal } from '../Modal/Modal'
 import { BidForm } from '../BidForm/BidForm'
 import { EndAuctionButton } from '../EndAuctionButton/EndAuctionButton'
 import { ClaimButton } from '../ClaimButton/ClaimButton'
+import { WithdrawButton } from '../WithdrawButton/WithdrawButton'
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import type { AuctionCardProps } from '../../../types/auction'
 
@@ -24,27 +25,18 @@ export function AuctionCard({ auction }: AuctionCardProps) {
   const isAdmin =
     !!userAddress && userAddress.toLowerCase() === ADMIN_ADDRESS.toLowerCase()
 
-  const { data: onchainAuction } = useReadContract({
+  const { data: auctionStruct } = useReadContract({
     address: contractsConfig.DnAAuctionHouse.address,
     abi: contractsConfig.DnAAuctionHouse.abi,
     functionName: 'auctions',
     args: [BigInt(auction.id)],
   })
 
-  const auctionStruct = onchainAuction as
-    | {
-        nft: string
-        tokenId: bigint
-        startingBid: bigint
-        endTime: bigint
-        active: boolean
-        highestBidder: string
-        highestBid: bigint
-      }
-    | undefined
-
-  const nftAddress = auctionStruct?.nft
-  const tokenId = auctionStruct?.tokenId
+  const a = auctionStruct as unknown[] | undefined
+  const nftAddress = a?.[0] as string | undefined
+  const tokenId = a?.[1] as bigint | undefined
+  const endTime = a?.[3] as bigint | undefined
+  const auctionActive = (a?.[4] as boolean) ?? true
 
   const { data: ownerOnChain } = useReadContract({
     address: nftAddress as `0x${string}` | undefined,
@@ -55,25 +47,19 @@ export function AuctionCard({ auction }: AuctionCardProps) {
   })
 
   const ownerString = ownerOnChain as string | undefined
-  const alreadyClaimedOnChain =
+  const nftClaimed =
     !!ownerString &&
     ownerString.toLowerCase() !==
       contractsConfig.DnAAuctionHouse.address.toLowerCase()
 
-  const now = Math.floor(Date.now() / 1000)
-  const auctionExpiredByTime = auction.endTime <= now
-
-  const isActiveOnChain =
-    auctionStruct?.active === undefined ? true : auctionStruct.active
+  const auctionExpiredByTime =
+    (endTime ? Number(endTime) * 1000 : 0) <= Date.now()
 
   const shouldShowEndButton =
-    isAdmin && !endedLocal && auctionExpiredByTime && isActiveOnChain
+    isAdmin && !endedLocal && auctionActive && auctionExpiredByTime
 
   const shouldShowClaimButton =
-    isWinner &&
-    !claimedLocal &&
-    !alreadyClaimedOnChain &&
-    (!isActiveOnChain || auctionExpiredByTime)
+    isWinner && !claimedLocal && !auctionActive && !nftClaimed
 
   return (
     <div className={styles.card}>
@@ -89,21 +75,24 @@ export function AuctionCard({ auction }: AuctionCardProps) {
 
         {auctionExpiredByTime && auction.highestBidder && (
           <p className={styles.winner}>
-            Winner: {auction.highestBidder.slice(0, 6)}...
+            <span>Winner: </span> {auction.highestBidder.slice(0, 6)}...
             {auction.highestBidder.slice(-4)}
           </p>
         )}
 
         <div className={styles.info}>
           <p className={styles.bid}>
-            <span>Current bid:</span> {auction.currentBid}
+            <span>
+              {auctionExpiredByTime ? 'Winning bid:' : 'Current bid:'}
+            </span>{' '}
+            {auction.currentBid}
           </p>
           <p className={styles.timer}>
             <span>Ends in:</span> {auction.endsIn}
           </p>
         </div>
 
-        {auction.endTime > now && (
+        {auction.endTime * 1000 > Date.now() && (
           <button className={styles.button} onClick={() => setIsBidOpen(true)}>
             Place a Bid
           </button>
@@ -120,6 +109,16 @@ export function AuctionCard({ auction }: AuctionCardProps) {
           <ClaimButton
             auctionId={auction.id}
             onClaimed={() => setClaimedLocal(true)}
+          />
+        )}
+
+        {!isWinner && !isAdmin && !auctionActive && auctionExpiredByTime && (
+          <WithdrawButton
+            auctionId={auction.id}
+            userAddress={userAddress}
+            onWithdrawn={() =>
+              console.log(`Refund claimed for auction ${auction.id}`)
+            }
           />
         )}
       </div>

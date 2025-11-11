@@ -26,7 +26,7 @@ export function useOwnedNFTs(userAddress: string | undefined) {
       setIsLoading(true)
 
       try {
-        const [ids, uris] = data as [bigint[], string[]] // 👈 niente prices
+        const [ids, uris] = data as [bigint[], string[]]
         const formatted = await Promise.all(
           ids.map(async (id, i) => {
             const tokenId = Number(id)

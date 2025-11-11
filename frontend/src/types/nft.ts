@@ -32,3 +32,9 @@ export type MintButtonProps = {
   formData: FormDataType
   onSuccess?: (hash: string) => void
 }
+
+export interface AddToMetamaskButtonProps {
+  nftAddress: string
+  tokenId: number
+  image?: string
+}
