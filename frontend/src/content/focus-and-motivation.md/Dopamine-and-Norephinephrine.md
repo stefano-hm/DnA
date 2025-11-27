@@ -4,8 +4,10 @@ subtitle: 'Protocols for Modulating Dopamine and Norepinephrine to Combat Procra
 category: 'Focus & Motivation'
 date: '2025-10-28'
 author: 'DnA Research Team'
+image: '/article-images/focus-motivation/img1.jpg'
 level: 'base'
-nftAccess: false
+nftAccess: true
+nftId: 3
 tags: ['sleep', 'melatonin', 'circadian rhythm']
 ---
 

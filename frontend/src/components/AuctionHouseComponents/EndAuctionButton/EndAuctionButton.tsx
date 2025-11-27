@@ -29,9 +29,7 @@ export function EndAuctionButton({
   const active = a?.[4] as boolean | undefined
 
   useEffect(() => {
-    if (active === false) {
-      setHasEnded(true)
-    }
+    if (active === false) setHasEnded(true)
   }, [active])
 
   const handleEnd = async () => {
@@ -43,7 +41,11 @@ export function EndAuctionButton({
   if (hasEnded) return null
 
   return (
-    <button onClick={handleEnd} className={styles.button} disabled={isEnding}>
+    <button
+      onClick={handleEnd}
+      className={styles.endButton}
+      disabled={isEnding}
+    >
       {isEnding ? 'Ending...' : 'End Auction'}
     </button>
   )

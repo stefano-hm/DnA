@@ -1,45 +1,59 @@
-.card {
-  background-color: var(--color-card-bg);
+.myNftCard {
+  background: var(--color-card-bg);
   border: 1px solid var(--color-border);
-  border-radius: 1rem;
-  box-shadow: 0 2px 6px var(--color-shadow);
-  padding: var(--space-sm);
+  border-radius: var(--radius);
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-width: 320px;
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.4);
+}
+
+.myNftCard:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 22px rgba(0, 180, 255, 0.25);
+}
+
+.myNftImage {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--color-border);
+  transition: transform var(--transition-slow);
+}
+
+.myNftCard:hover .myNftImage {
+  transform: scale(1.05);
+}
+
+.myNftInfo {
+  padding: var(--space-md);
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  transition:
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast);
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px var(--color-shadow);
-}
-
-.image {
-  width: 100%;
-  height: 240px;
-  object-fit: cover;
-  border-radius: 0.75rem;
-  background-color: var(--color-border);
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.name {
+.myNftName {
+  color: var(--color-text);
+  font-size: 1.2rem;
   font-weight: 600;
-  font-size: 1rem;
-  color: var(--color-text);
 }
 
-.desc {
-  font-size: 0.9rem;
-  line-height: 1.4;
-  color: var(--color-text);
-  opacity: 0.8;
+.myNftDescription {
+  color: var(--color-text-dim);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .myNftImage {
+    height: 180px;
+  }
 }

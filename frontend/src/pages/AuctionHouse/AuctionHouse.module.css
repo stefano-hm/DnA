@@ -1,7 +1,47 @@
 .page {
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  min-height: 100vh;
-  padding: var(--space-lg) var(--space-md);
-  font-family: var(--font-family);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  width: 100%;
+  padding: var(--space-xxl) 0;
+  margin: 0;
+  background: url('/auction-images/hero.png') center/cover no-repeat;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 1;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 2;
+}
+
+.live {
+  background: #070707;
+  padding: var(--space-xxl) 0;
+  margin: 0;
+}
+
+.ended {
+  background: #090909;
+  padding: var(--space-xxl) 0;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .hero,
+  .live,
+  .ended {
+    padding: var(--space-xl) 0;
+  }
 }

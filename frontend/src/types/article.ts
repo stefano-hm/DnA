@@ -4,9 +4,10 @@ export interface Article {
   category: string
   date: string
   author?: string
-  level?: string
   nftAccess?: boolean
+  nftId?: number | string
   tags?: string[]
   content: string
   slug: string
+  image: string
 }

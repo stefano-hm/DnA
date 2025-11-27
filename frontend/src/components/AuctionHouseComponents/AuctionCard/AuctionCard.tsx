@@ -62,38 +62,42 @@ export function AuctionCard({ auction }: AuctionCardProps) {
     isWinner && !claimedLocal && !auctionActive && !nftClaimed
 
   return (
-    <div className={styles.card}>
+    <div className={styles.auctionCard}>
       <img
         src={auction.image}
         alt={auction.title}
-        className={styles.image}
+        className={styles.auctionImage}
         loading="lazy"
       />
 
-      <div className={styles.content}>
-        <h3 className={styles.title}>{auction.title}</h3>
+      <div className={styles.cardContent}>
+        <h3 className={styles.cardTitle}>{auction.title}</h3>
 
         {auctionExpiredByTime && auction.highestBidder && (
-          <p className={styles.winner}>
+          <p className={styles.winnerText}>
             <span>Winner: </span> {auction.highestBidder.slice(0, 6)}...
             {auction.highestBidder.slice(-4)}
           </p>
         )}
 
-        <div className={styles.info}>
-          <p className={styles.bid}>
+        <div className={styles.infoRow}>
+          <p className={styles.bidText}>
             <span>
               {auctionExpiredByTime ? 'Winning bid:' : 'Current bid:'}
             </span>{' '}
             {auction.currentBid}
           </p>
-          <p className={styles.timer}>
+
+          <p className={styles.timerText}>
             <span>Ends in:</span> {auction.endsIn}
           </p>
         </div>
 
         {auction.endTime * 1000 > Date.now() && (
-          <button className={styles.button} onClick={() => setIsBidOpen(true)}>
+          <button
+            className={styles.bidButton}
+            onClick={() => setIsBidOpen(true)}
+          >
             Place a Bid
           </button>
         )}

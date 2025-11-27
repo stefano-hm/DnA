@@ -4,6 +4,7 @@ subtitle: 'Mastering Alertness and Rest: The Dual-Process Model and Hormonal Pac
 category: 'Sleep & Circadian Rhythm'
 date: '2025-10-28'
 author: 'DnA Research Team'
+image: '/article-images/sleep/img1.jpg'
 level: 'base'
 nftAccess: false
 tags: ['sleep', 'melatonin', 'circadian rhythm']

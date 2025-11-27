@@ -4,6 +4,7 @@ subtitle: 'Evidence-Based Protocols for Static, Dynamic, and Proprioceptive Neur
 category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
+image: '/article-images/sport-nutrition/img1.jpg'
 level: 'base'
 nftAccess: false
 tags: ['sleep', 'melatonin', 'circadian rhythm']

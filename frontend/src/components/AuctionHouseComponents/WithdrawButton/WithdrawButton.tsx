@@ -45,7 +45,7 @@ export function WithdrawButton({
   return (
     <button
       onClick={handleWithdraw}
-      className={styles.button}
+      className={styles.withdrawButton}
       disabled={isWithdrawing}
     >
       {isWithdrawing ? 'Withdrawing...' : 'Withdraw Refund'}

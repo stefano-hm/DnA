@@ -1,42 +1,36 @@
 .buyButton {
-  margin-top: var(--space-xs);
-  padding: 0.75rem 2rem;
-  background: linear-gradient(135deg, var(--color-text), var(--color-accent));
-  color: var(--color-bg);
-  border: none;
-  border-radius: 2rem;
-  font-weight: 600;
+  width: 100%;
+  padding: var(--space-sm);
   font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border: none;
+  border-radius: var(--radius);
   cursor: pointer;
+
+  background: linear-gradient(135deg, var(--color-accent), #0080ff);
+  color: #fff;
+
+  box-shadow: 0 0 12px rgba(0, 180, 255, 0.25);
   transition:
     transform var(--transition-fast),
-    box-shadow var(--transition-slow),
-    opacity var(--transition-fast);
-  box-shadow: 0 4px 12px var(--color-shadow);
+    filter var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .buyButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px var(--color-shadow);
-  opacity: 0.95;
+  filter: brightness(1.13);
+  box-shadow: 0 0 18px rgba(0, 180, 255, 0.4);
 }
 
 .buyButton:active {
   transform: scale(0.97);
-  opacity: 0.9;
+  box-shadow: 0 0 10px rgba(0, 180, 255, 0.25);
 }
 
-.buyButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .buyButton {
-    width: auto;
-    padding: 0.7rem 1.6rem;
     font-size: 0.95rem;
+    padding: var(--space-xs) var(--space-sm);
   }
 }

@@ -1,55 +1,61 @@
-.container {
+.formContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  background: var(--color-card-bg);
+  gap: var(--space-sm);
   padding: var(--space-md);
-  border-radius: 1.5rem;
-  box-shadow: 0 4px 16px var(--color-shadow);
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-.input,
-.textarea {
-  width: 100%;
-  margin-top: var(--space-xs);
-  padding: 0.75rem 1rem;
+  background: var(--color-card-bg);
   border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-family);
-  font-size: 1rem;
-  transition: border-color var(--transition-fast);
+  border-radius: var(--radius);
+  box-shadow: 0 0 18px rgba(0, 180, 255, 0.06);
 }
 
-.input:focus,
-.textarea:focus {
-  outline: none;
-  border-color: var(--color-accent);
-}
-
-.textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-h3 {
-  margin-bottom: var(--space-sm);
-  color: var(--color-text);
+.formTitle {
+  color: var(--color-accent);
+  font-size: 1.4rem;
   font-weight: 600;
+  margin-bottom: var(--space-sm);
+  text-shadow: 0 0 8px rgba(0, 180, 255, 0.3);
   text-align: center;
 }
 
+.formInput,
+.formTextarea {
+  width: 100%;
+  padding: var(--space-sm);
+  background: #0c0c0c;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.formInput:hover,
+.formTextarea:hover {
+  border-color: rgba(0, 180, 255, 0.4);
+}
+
+.formInput:focus,
+.formTextarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 10px rgba(0, 180, 255, 0.25);
+  background: #0f0f10;
+}
+
+.formTextarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
 @media (max-width: 768px) {
-  .container {
-    width: 90%;
+  .formContainer {
     padding: var(--space-sm);
   }
 
-  .input,
-  .textarea {
-    font-size: 0.95rem;
+  .formTitle {
+    font-size: 1.2rem;
   }
 }

@@ -4,6 +4,7 @@ subtitle: 'Evidence-Based Programming and Substrate Utilization Strategies for H
 category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
+image: '/article-images/sport-nutrition/img2.jpg'
 level: 'base'
 nftAccess: false
 tags: ['sleep', 'melatonin', 'circadian rhythm']

@@ -38,8 +38,8 @@ export function MintForm({ onMintSuccess }: MintFormProps) {
   if (!isAdmin) return null
 
   return (
-    <div className={styles.container}>
-      <h3>Create New NFT</h3>
+    <div className={styles.formContainer}>
+      <h3 className={styles.formTitle}>Create New NFT</h3>
 
       <input
         type="text"
@@ -47,7 +47,7 @@ export function MintForm({ onMintSuccess }: MintFormProps) {
         placeholder="Title"
         value={formData.title}
         onChange={handleChange}
-        className={styles.input}
+        className={styles.formInput}
       />
 
       <textarea
@@ -55,14 +55,14 @@ export function MintForm({ onMintSuccess }: MintFormProps) {
         placeholder="Description"
         value={formData.description}
         onChange={handleChange}
-        className={styles.textarea}
+        className={styles.formTextarea}
       />
 
       <input
         type="file"
         accept="image/*"
         onChange={handleFileChange}
-        className={styles.input}
+        className={styles.formInput}
       />
 
       <input
@@ -71,7 +71,7 @@ export function MintForm({ onMintSuccess }: MintFormProps) {
         placeholder="Price in ETH"
         value={formData.price}
         onChange={handleChange}
-        className={styles.input}
+        className={styles.formInput}
       />
 
       <MintButton formData={formData} onSuccess={handleSuccess} />

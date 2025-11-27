@@ -9,6 +9,7 @@ export function ClaimButton({ auctionId, onClaimed }: ClaimButtonProps) {
   const { address: auctionAddress, abi } = contractsConfig.DnAAuctionHouse
   const [isClaiming, setIsClaiming] = useState(false)
   const [isClaimed, setIsClaimed] = useState(false)
+
   const { claimNFT } = useClaimNFT(id => {
     setIsClaimed(true)
     onClaimed?.(id)
@@ -34,7 +35,7 @@ export function ClaimButton({ auctionId, onClaimed }: ClaimButtonProps) {
   return (
     <button
       onClick={handleClaim}
-      className={styles.button}
+      className={styles.claimButton}
       disabled={isClaiming}
     >
       {isClaiming ? 'Claiming...' : 'Claim NFT'}

@@ -20,23 +20,25 @@ export function NFTCard({
     !isOwner
 
   return (
-    <div className={`${styles.card} ${isSold ? styles.sold : ''}`}>
+    <div className={`${styles.cardContainer} ${isSold ? styles.soldCard : ''}`}>
       <div className={styles.imageWrapper}>
         <img
           src={image}
           alt={name || `NFT ${tokenId}`}
-          className={styles.image}
+          className={styles.nftImage}
         />
-        {isSold && <span className={styles.badge}>SOLD</span>}
+
+        {isSold && <span className={styles.soldBadge}>SOLD</span>}
         {isOwner && <span className={styles.ownedBadge}>OWNED</span>}
       </div>
 
       <h3 className={styles.cardTitle}>{name || `Token #${tokenId}`}</h3>
-      {description && <p className={styles.description}>{description}</p>}
 
-      {!isSold && !isOwner && <p className={styles.price}>{price} ETH</p>}
+      {description && <p className={styles.cardDescription}>{description}</p>}
 
-      <p className={styles.owner}>
+      {!isSold && !isOwner && <p className={styles.priceTag}>{price} ETH</p>}
+
+      <p className={styles.ownerText}>
         Owner: {owner.slice(0, 6)}...{owner.slice(-4)}
       </p>
 

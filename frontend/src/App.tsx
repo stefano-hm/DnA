@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
-import { Navbar } from './components/Navbar/Navbar'
+import { Layout } from './components/Layout/Layout'
 import { Loader } from './components/Loader/Loader'
 
 const Home = lazy(() => import('./pages/Home/Home'))
@@ -11,13 +11,11 @@ const AuctionHouse = lazy(() => import('./pages/AuctionHouse/AuctionHouse'))
 const MyNFTs = lazy(() => import('./pages/MyNFTs/MyNFTs'))
 const NFTDetail = lazy(() => import('./pages/NFTDetail/NFTDetail'))
 const About = lazy(() => import('./pages/About/About'))
-const Category = lazy(() => import('./pages/Category/Category'))
 
 function App() {
   return (
     <Router>
-      <Navbar />
-      <main>
+      <Layout>
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -28,10 +26,9 @@ function App() {
             <Route path="/my-nfts" element={<MyNFTs />} />
             <Route path="/nft/:id" element={<NFTDetail />} />
             <Route path="/about" element={<About />} />
-            <Route path="/articles/category/:slug" element={<Category />} />
           </Routes>
         </Suspense>
-      </main>
+      </Layout>
     </Router>
   )
 }

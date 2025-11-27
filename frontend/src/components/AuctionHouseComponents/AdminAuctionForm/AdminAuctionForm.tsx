@@ -9,6 +9,7 @@ const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS
 export function AdminAuctionForm() {
   const { address: userAddress } = useAccount()
   const { createAuction } = useCreateAuction()
+
   const [formData, setFormData] = useState<AuctionFormData>({
     nftAddress: '',
     tokenId: '',
@@ -37,45 +38,37 @@ export function AdminAuctionForm() {
     })
   }
 
-  if (!isAdmin) {
-    return (
-      <div className={styles.form}>
-        <p style={{ textAlign: 'center', opacity: 0.7 }}>
-          Only the admin can create new auctions.
-        </p>
-      </div>
-    )
-  }
+  if (!isAdmin) return null
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
-      <h2 className={styles.heading}>Create New Auction</h2>
+    <form className={styles.adminForm} onSubmit={handleSubmit}>
+      <h2 className={styles.formHeading}>Create New Auction</h2>
 
-      <label className={styles.label}>
+      <label className={styles.formLabel}>
         NFT Contract Address
         <input
           type="text"
           name="nftAddress"
           value={formData.nftAddress}
           onChange={handleChange}
-          className={styles.input}
+          className={styles.formInput}
           placeholder="0x..."
         />
       </label>
 
-      <label className={styles.label}>
+      <label className={styles.formLabel}>
         Token ID
         <input
           type="number"
           name="tokenId"
           value={formData.tokenId}
           onChange={handleChange}
-          className={styles.input}
+          className={styles.formInput}
           placeholder="1"
         />
       </label>
 
-      <label className={styles.label}>
+      <label className={styles.formLabel}>
         Starting Bid (ETH)
         <input
           type="number"
@@ -83,24 +76,24 @@ export function AdminAuctionForm() {
           name="startingBid"
           value={formData.startingBid}
           onChange={handleChange}
-          className={styles.input}
+          className={styles.formInput}
           placeholder="0.05"
         />
       </label>
 
-      <label className={styles.label}>
+      <label className={styles.formLabel}>
         Duration (seconds)
         <input
           type="number"
           name="duration"
           value={formData.duration}
           onChange={handleChange}
-          className={styles.input}
+          className={styles.formInput}
           placeholder="3600"
         />
       </label>
 
-      <button type="submit" className={styles.button}>
+      <button type="submit" className={styles.submitButton}>
         Create Auction
       </button>
     </form>

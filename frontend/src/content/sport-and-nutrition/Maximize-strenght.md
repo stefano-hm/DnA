@@ -4,6 +4,7 @@ subtitle: 'The Interplay of Neural Drive, Mechanical Tension, and Training Speci
 category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
+image: '/article-images/example.png'
 level: 'base'
 nftAccess: false
 tags: ['sleep', 'melatonin', 'circadian rhythm']

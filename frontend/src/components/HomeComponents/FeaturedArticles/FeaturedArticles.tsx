@@ -10,35 +10,37 @@ export function FeaturedArticles() {
   useEffect(() => {
     const fetch = async () => {
       const all = await loadArticles()
-
       setFeatured(all.slice(0, 2))
     }
     fetch()
   }, [])
 
-  if (featured.length === 0) {
-    return null
-  }
+  if (featured.length === 0) return null
 
   return (
-    <section className={styles.featured}>
-      <h2 className={styles.heading}>Featured Articles</h2>
-      <div className={styles.grid}>
+    <section className={styles.featuredSection}>
+      <h2 className={styles.featuredHeading}>Featured Articles</h2>
+      <div className={styles.featuredGrid}>
         {featured.map(article => (
           <Link
             key={article.slug}
             to={`/articles/${article.slug}`}
-            className={styles.card}
+            className={styles.articleCard}
           >
             <div className={styles.imageWrapper}>
-              <div className={styles.imageFallback} />
+              <img
+                src={article.image}
+                alt={article.title}
+                className={styles.image}
+              />
             </div>
-            <div className={styles.content}>
-              <h3 className={styles.title}>{article.title}</h3>
+
+            <div className={styles.cardContent}>
+              <h3 className={styles.cardTitle}>{article.title}</h3>
               {article.subtitle ? (
-                <p className={styles.excerpt}>{article.subtitle}</p>
+                <p className={styles.cardExcerpt}>{article.subtitle}</p>
               ) : (
-                <p className={styles.excerpt}>Read the full article →</p>
+                <p className={styles.cardExcerpt}>Read the full article →</p>
               )}
             </div>
           </Link>

@@ -1,33 +1,81 @@
-.form {
+.bidFormContainer {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-md);
+
+  padding: var(--space-md);
+  background: var(--color-card-bg);
+  border-radius: var(--radius);
 }
 
-.label {
-  font-weight: 500;
+.bidLabel {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.input {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 0.5rem 0.75rem;
+  gap: var(--space-xs);
   font-size: 0.95rem;
+  color: var(--color-text);
 }
 
-.button {
-  background: #111;
-  color: #fff;
+.bidInput {
+  width: 100%;
+  padding: var(--space-sm);
+  background: #0c0c0c;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  font-size: 1rem;
+
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.bidInput:hover {
+  border-color: rgba(0, 180, 255, 0.35);
+}
+
+.bidInput:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 10px rgba(0, 180, 255, 0.25);
+  background: #0f0f10;
+}
+
+.bidInput:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bidButton {
+  width: 100%;
+  padding: var(--space-sm);
+
+  background: linear-gradient(135deg, var(--color-accent), #0080ff);
   border: none;
-  border-radius: 8px;
-  padding: 0.6rem;
+  border-radius: var(--radius);
   cursor: pointer;
-  transition: 0.2s;
+
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+
+  transition:
+    transform var(--transition-fast),
+    filter var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  box-shadow: 0 0 12px rgba(0, 180, 255, 0.25);
 }
 
-.button:hover {
-  background: #333;
+.bidButton:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.bidButton:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.bidButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

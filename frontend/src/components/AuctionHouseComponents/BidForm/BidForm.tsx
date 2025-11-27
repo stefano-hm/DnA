@@ -26,21 +26,21 @@ export function BidForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      <label className={styles.label}>
+    <form onSubmit={handleSubmit} className={styles.bidFormContainer}>
+      <label className={styles.bidLabel}>
         Amount (ETH)
         <input
           type="number"
           step="0.0001"
           value={amount}
           onChange={e => setAmount(e.target.value)}
-          className={styles.input}
+          className={styles.bidInput}
           placeholder={`${(minBid + 0.0001).toFixed(4)} or higher`}
           disabled={isExpired}
         />
       </label>
 
-      <button type="submit" className={styles.button} disabled={isExpired}>
+      <button type="submit" className={styles.bidButton} disabled={isExpired}>
         {isExpired ? 'Auction Ended' : 'Place Bid'}
       </button>
     </form>

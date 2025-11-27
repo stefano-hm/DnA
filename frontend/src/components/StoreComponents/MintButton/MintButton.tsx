@@ -46,7 +46,7 @@ export function MintButton({ formData, onSuccess }: MintButtonProps) {
   }
 
   return (
-    <button onClick={handleMint} className={styles.button}>
+    <button onClick={handleMint} className={styles.mintButton}>
       Mint NFT
     </button>
   )

@@ -1,16 +1,44 @@
-.header {
+.headerSection {
   text-align: center;
-  margin-bottom: var(--space-lg);
+  padding: var(--space-lg) var(--space-sm);
+  margin: 0;
+
+  animation: fadeIn 0.8s ease both;
 }
 
-.title {
-  font-size: 2.2rem;
-  font-weight: 600;
+.headerTitle {
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 1px;
   margin-bottom: var(--space-sm);
 }
 
-.subtitle {
-  color: var(--color-text);
-  opacity: 0.7;
-  font-size: 1.1rem;
+.headerSubtitle {
+  font-size: 1.15rem;
+  color: var(--color-text-dim);
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .headerTitle {
+    font-size: 2rem;
+  }
+
+  .headerSubtitle {
+    font-size: 1rem;
+  }
 }

@@ -1,30 +1,33 @@
 import type { Article } from '../../../types/article'
 import styles from './ArticleCard.module.css'
 
-interface ArticleCardProps {
+interface Props {
   article: Article
+  spotlight?: boolean
 }
 
-export function ArticleCard({ article }: ArticleCardProps) {
-  const { title, date, category, author, content, slug } = article
-
-  const preview = content.length > 200 ? content.slice(0, 200) + '…' : content
+export function ArticleCard({ article, spotlight = false }: Props) {
+  const { title, subtitle, date, author, slug, image } = article
 
   return (
-    <article className={styles.card}>
-      <h2 className={styles.title}>{title}</h2>
-
-      <div className={styles.meta}>
-        <span>{new Date(date).toLocaleDateString()}</span>
-        {category && <span>• {category}</span>}
-        {author && <span>• {author}</span>}
-      </div>
-
-      <p className={styles.preview}>{preview}</p>
-
-      <a href={`/articles/${slug}`} className={styles.link}>
-        Read more →
+    <article
+      className={`${styles.card} ${spotlight ? styles.spotlight : styles.compact}`}
+    >
+      <a href={`/articles/${slug}`}>
+        <img src={image} alt={title} className={styles.image} />
       </a>
+
+      <div className={styles.text}>
+        {author && <p className={styles.author}>{author}</p>}
+
+        <a href={`/articles/${slug}`} className={styles.title}>
+          {title}
+        </a>
+
+        {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+
+        <p className={styles.meta}>{new Date(date).toLocaleDateString()}</p>
+      </div>
     </article>
   )
 }

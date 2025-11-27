@@ -9,17 +9,21 @@ export default function MyNFTs() {
 
   if (!address)
     return (
-      <p className={styles.message}>Connect your wallet to see your NFTs</p>
+      <p className={styles.myNftsMessage}>
+        Connect your wallet to see your NFTs
+      </p>
     )
-  if (isLoading) return <p className={styles.message}>Loading...</p>
+
+  if (isLoading) return <p className={styles.myNftsMessage}>Loading...</p>
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>My NFTs</h1>
+    <div className={styles.myNftsPage}>
+      <h1 className={styles.myNftsTitle}>My NFTs</h1>
+
       {nfts.length === 0 ? (
-        <p className={styles.message}>No NFTs found.</p>
+        <p className={styles.myNftsMessage}>No NFTs found.</p>
       ) : (
-        <div className={styles.grid}>
+        <div className={styles.myNftsGrid}>
           {nfts.map(nft => (
             <MyNFTCard key={nft.tokenId} nft={nft} />
           ))}

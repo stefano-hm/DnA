@@ -4,6 +4,7 @@ subtitle: 'Leveraging Visual Cognition and Behavioral Science to Overcome Obstac
 category: 'Neuroplasticity & Behaviour Change'
 date: '2025-10-28'
 author: 'DnA Research Team'
+image: '/article-images/neuroplasticity/img2.jpg'
 level: 'base'
 nftAccess: false
 tags: ['sleep', 'melatonin', 'circadian rhythm']

@@ -17,19 +17,20 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       : null
 
   const content = (
-    <div className={styles.backdrop} onClick={onClose}>
-      <div className={styles.content} onClick={e => e.stopPropagation()}>
-        <div className={styles.header}>
-          {title && <h2 className={styles.title}>{title}</h2>}
+    <div className={styles.modalBackdrop} onClick={onClose}>
+      <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+        <div className={styles.modalHeader}>
+          {title && <h2 className={styles.modalTitle}>{title}</h2>}
           <button
-            className={styles.close}
+            className={styles.modalClose}
             onClick={onClose}
             aria-label="Close modal"
           >
             ×
           </button>
         </div>
-        <div className={styles.body}>{children}</div>
+
+        <div className={styles.modalBody}>{children}</div>
       </div>
     </div>
   )

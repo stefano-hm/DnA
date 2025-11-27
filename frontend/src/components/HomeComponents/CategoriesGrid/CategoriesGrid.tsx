@@ -10,35 +10,26 @@ export function CategoriesGrid() {
   useEffect(() => {
     const fetchCategories = async () => {
       const all: Article[] = await loadArticles()
-
       const uniqueCategories = Array.from(
         new Set(all.map(a => a.category?.trim()).filter(Boolean) as string[])
       )
-
       setCategories(uniqueCategories)
     }
 
     fetchCategories()
   }, [])
 
-  const slugifyCategory = (name: string) =>
-    name
-      .toLowerCase()
-      .replace(/&/g, 'and')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '')
-
   return (
-    <section className={styles.categories}>
-      <h2 className={styles.heading}>Explore Topics</h2>
-      <div className={styles.grid}>
+    <section className={styles.categoriesSection}>
+      <h2 className={styles.categoriesHeading}>Explore Topics</h2>
+      <div className={styles.categoryGrid}>
         {categories.map(category => (
           <Link
             key={category}
-            to={`/articles/category/${slugifyCategory(category)}`}
-            className={styles.card}
+            to={`/articles?category=${encodeURIComponent(category)}`}
+            className={styles.categoryCard}
           >
-            <h3 className={styles.title}>{category}</h3>
+            <h3 className={styles.categoryTitle}>{category}</h3>
           </Link>
         ))}
       </div>

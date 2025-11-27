@@ -1,57 +1,116 @@
-.form {
-  max-width: 480px;
-  margin: 0 auto var(--space-lg);
+.adminForm {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-lg) var(--space-md);
+  margin-bottom: var(--space-lg);
+
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-  background-color: var(--color-card-bg);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 4px 12px var(--color-shadow);
-  border-radius: 1rem;
-  padding: var(--space-lg);
+
+  box-shadow: 0 0 16px rgba(0, 180, 255, 0.06);
+  animation: fadeInUp 0.8s ease both;
 }
 
-.heading {
+.formHeading {
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 1.7rem;
   font-weight: 600;
-  margin-bottom: var(--space-sm);
+  color: var(--color-accent);
+  text-shadow: 0 0 12px rgba(0, 180, 255, 0.35);
 }
 
-.label {
+.formLabel {
   display: flex;
   flex-direction: column;
+  gap: var(--space-xs);
+  color: var(--color-text);
   font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--color-text);
+  letter-spacing: 0.4px;
 }
 
-.input {
-  margin-top: var(--space-xs);
+.formInput {
   padding: var(--space-sm);
+  background: #0c0c0c;
   border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  background-color: var(--color-bg);
+  border-radius: var(--radius);
   color: var(--color-text);
-  transition: border-color var(--transition-fast);
+
+  font-size: 0.95rem;
+
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
 }
 
-.input:focus {
-  outline: none;
+.formInput:hover {
+  border-color: rgba(0, 180, 255, 0.35);
+}
+
+.formInput:focus {
   border-color: var(--color-accent);
+  box-shadow: 0 0 10px rgba(0, 180, 255, 0.25);
+  background: #0f0f10;
 }
 
-.button {
-  background-color: var(--color-accent);
-  color: var(--color-bg);
+.submitButton {
+  margin-top: var(--space-sm);
+  padding: var(--space-sm);
+  width: 100%;
+
+  background: linear-gradient(135deg, var(--color-accent), #0080ff);
+  color: #fff;
+
+  font-size: 1rem;
   font-weight: 600;
   border: none;
-  border-radius: 0.5rem;
-  padding: var(--space-sm);
+  border-radius: var(--radius);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+
+  box-shadow: 0 0 12px rgba(0, 180, 255, 0.25);
+
+  transition:
+    transform var(--transition-fast),
+    filter var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
-.button:hover {
-  background-color: var(--color-text);
+.submitButton:hover {
+  filter: brightness(1.12);
+  box-shadow: 0 0 18px rgba(0, 180, 255, 0.4);
+}
+
+.submitButton:active {
+  transform: scale(0.97);
+}
+
+.notAdminText {
+  text-align: center;
+  color: var(--color-text-dim);
+  font-size: 0.95rem;
+  padding: var(--space-sm);
+  opacity: 0.75;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .adminForm {
+    padding: var(--space-md) var(--space-sm);
+  }
+
+  .formHeading {
+    font-size: 1.4rem;
+  }
 }

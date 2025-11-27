@@ -4,6 +4,7 @@ subtitle: 'Protocols for Enhancing Central Command and Peripheral Aerobic Capaci
 category: 'Neuroplasticity & Behaviour Change'
 date: '2025-10-28'
 author: 'DnA Research Team'
+image: '/article-images/neuroplasticity/img1.jpg'
 level: 'base'
 nftAccess: false
 tags: ['sleep', 'melatonin', 'circadian rhythm']

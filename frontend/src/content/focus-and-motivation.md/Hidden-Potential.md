@@ -4,8 +4,9 @@ subtitle: 'Strategies for Nurturing Intrinsic Motivation, Creativity, and Growth
 category: 'Focus & Motivation'
 date: '2025-10-28'
 author: 'DnA Research Team'
+image: '/article-images/focus-motivation/img2.jpg'
 level: 'base'
-nftAccess: false
+nftAccess: true
 tags: ['sleep', 'melatonin', 'circadian rhythm']
 ---
 

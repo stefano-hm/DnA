@@ -1,19 +1,38 @@
-.button {
-  margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var (--color-success);
-  color: var (--color-bg);
-  border: none;
-  border-radius: 6px;
+.addButton {
+  width: 100%;
+  padding: var(--space-xs) var(--space-sm);
+
+  background: #0a0f14;
+  border: 1px solid rgba(0, 180, 255, 0.35);
+  color: var(--color-accent);
+
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+
   cursor: pointer;
-  transition: 0.2s;
+
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast),
+    border-color var(--transition-fast);
+
+  box-shadow: 0 0 10px rgba(0, 180, 255, 0.15);
 }
 
-.button:hover:not(:disabled) {
-  background: var (--color-success-dark);
+.addButton:hover {
+  background: rgba(0, 180, 255, 0.1);
+  border-color: rgba(0, 180, 255, 0.55);
+  box-shadow: 0 0 14px rgba(0, 180, 255, 0.25);
 }
 
-.button:disabled {
-  opacity: 0.6;
+.addButton:active {
+  transform: scale(0.97);
+}
+
+.addButton:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }

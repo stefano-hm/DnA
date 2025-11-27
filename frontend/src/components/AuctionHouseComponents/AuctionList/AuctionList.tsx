@@ -2,13 +2,10 @@ import { useEffect, useState } from 'react'
 import { useReadContract } from 'wagmi'
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import { cidToGatewayUrl } from '../../../services/ipfsService'
-import { AuctionCard } from '../AuctionCard/AuctionCard'
-import { EndedAuctions } from '../EndedAuctions/EndedAuctions'
 import { useWatchBids } from '../../../hooks/useWatchBids'
 import type { AuctionItem } from '../../../types/auction'
-import styles from './AuctionList.module.css'
 
-export function AuctionList() {
+export function useAuctionData() {
   const { address: contractAddress, abi } = contractsConfig.DnAAuctionHouse
   const [auctions, setAuctions] = useState<AuctionItem[]>([])
 
@@ -98,63 +95,13 @@ export function AuctionList() {
     fetchAuctions()
   }, [auctionCount, contractAddress, abi])
 
-  if (!auctionCount) return <p>Loading auctions...</p>
-  if (auctions.length === 0) return <p>No auctions found.</p>
-
   const now = Math.floor(Date.now() / 1000)
   const activeAuctions = auctions.filter(a => a.active && a.endTime > now)
   const endedAuctions = auctions.filter(a => !a.active || a.endTime <= now)
 
-  return (
-    <div className={styles.wrapper}>
-      <section>
-        <h2 className={styles.sectionTitle}>Active Auctions</h2>
-        <div className={styles.list}>
-          {activeAuctions.length === 0 ? (
-            <p className={styles.empty}>No active auctions.</p>
-          ) : (
-            activeAuctions.map(auction => (
-              <AuctionCard
-                key={auction.id}
-                auction={{
-                  id: auction.id,
-                  title: auction.title || `NFT #${auction.tokenId}`,
-                  image: auction.image || '/placeholder.jpg',
-                  currentBid: `${auction.highestBid} ETH`,
-                  startingBid: auction.startingBid,
-                  highestBid: auction.highestBid,
-                  highestBidder: auction.highestBidder,
-                  endTime: auction.endTime,
-                  endsIn: formatEndsIn(auction.endTime),
-                }}
-              />
-            ))
-          )}
-        </div>
-      </section>
-
-      <EndedAuctions
-        auctions={endedAuctions.map(a => ({
-          id: a.id,
-          title: a.title || `NFT #${a.tokenId}`,
-          image: a.image || '/placeholder.jpg',
-          currentBid: `${a.highestBid} ETH`,
-          startingBid: a.startingBid,
-          highestBid: a.highestBid,
-          highestBidder: a.highestBidder,
-          endTime: a.endTime,
-          endsIn: formatEndsIn(a.endTime),
-        }))}
-      />
-    </div>
-  )
-}
-
-function formatEndsIn(endTime: number): string {
-  const now = Math.floor(Date.now() / 1000)
-  const diff = endTime - now
-  if (diff <= 0) return 'Ended'
-  const hours = Math.floor(diff / 3600)
-  const minutes = Math.floor((diff % 3600) / 60)
-  return `${hours}h ${minutes}m`
+  return {
+    loading: !auctionCount,
+    activeAuctions,
+    endedAuctions,
+  }
 }

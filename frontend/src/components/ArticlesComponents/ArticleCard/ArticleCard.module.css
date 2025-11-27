@@ -1,54 +1,126 @@
 .card {
-  background-color: var(--color-card-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 1rem;
-  padding: var(--space-md);
-  transition:
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast);
-  box-shadow: 0 4px 12px var(--color-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  background: transparent;
+  border: none;
+  width: 100%;
+  max-width: 100%;
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px var(--color-shadow);
+.image {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.author {
+  font-size: 0.9rem;
+  color: #475569;
 }
 
 .title {
-  font-family: var(--font-family);
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: var(--space-xs);
-  color: var(--color-text);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.title:hover {
+  text-decoration: underline;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #475569;
+  line-height: 1.35;
 }
 
 .meta {
-  color: var(--color-text);
-  opacity: 0.7;
-  font-size: 0.9rem;
-  margin-bottom: var(--space-sm);
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
+  font-size: 0.8rem;
+  color: #64748b;
 }
 
-.preview {
-  font-family: var(--font-family);
-  font-size: 1rem;
-  color: var(--color-text);
-  line-height: 1.6;
-  margin-bottom: var(--space-md);
+.spotlight .image {
+  height: 380px;
 }
 
-.link {
-  font-family: var(--font-family);
-  color: var(--color-accent);
-  font-weight: 500;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--transition-fast);
+.spotlight .title {
+  font-size: 2rem;
 }
 
-.link:hover {
-  border-color: var(--color-accent);
+.spotlight .subtitle {
+  font-size: 1.1rem;
+}
+
+@media (max-width: 1100px) {
+  .image {
+    height: 200px;
+  }
+
+  .spotlight .image {
+    height: 260px;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .spotlight .title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .compact {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  }
+
+  .compact .text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .compact .image {
+    width: 110px;
+    height: 110px;
+    min-width: 110px;
+    object-fit: cover;
+    border-radius: 6px;
+    order: 2;
+  }
+
+  .compact .text {
+    order: 1;
+  }
+
+  .compact .title {
+    font-size: 1.1rem;
+    line-height: 1.35;
+  }
+
+  .compact .subtitle {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    margin-top: 0.2rem;
+  }
+
+  .compact .meta {
+    font-size: 0.75rem;
+    margin-top: 0.3rem;
+  }
 }

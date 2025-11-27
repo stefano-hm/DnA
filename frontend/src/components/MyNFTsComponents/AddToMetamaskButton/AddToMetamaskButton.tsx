@@ -11,7 +11,6 @@ export function AddToMetamaskButton({
   const [added, setAdded] = useState(false)
   const { addToMetamask } = useAddToMetamask(() => {
     setAdded(true)
-
     localStorage.setItem(`addedToMetaMask_${tokenId}`, 'true')
   })
 
@@ -33,7 +32,7 @@ export function AddToMetamaskButton({
   if (added) return null
 
   return (
-    <button onClick={handleClick} className={styles.button}>
+    <button onClick={handleClick} className={styles.addButton}>
       Add to MetaMask
     </button>
   )

@@ -4,8 +4,9 @@ subtitle: 'Modulating Dopaminergic Pathways and Affective State for Motivation a
 category: 'Focus & Motivation'
 date: '2025-10-28'
 author: 'DnA Research Team'
+image: '/article-images/focus-motivation/img3.jpg'
 level: 'base'
-nftAccess: false
+nftAccess: true
 tags: ['sleep', 'melatonin', 'circadian rhythm']
 ---
 

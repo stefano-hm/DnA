@@ -9,14 +9,17 @@ interface Props {
 
 export function MyNFTCard({ nft }: Props) {
   return (
-    <div className={styles.card}>
+    <div className={styles.myNftCard}>
       {nft.image && (
-        <img src={nft.image} alt={nft.name} className={styles.image} />
+        <img src={nft.image} alt={nft.name} className={styles.myNftImage} />
       )}
 
-      <div className={styles.info}>
-        <h3 className={styles.name}>{nft.name}</h3>
-        {nft.description && <p className={styles.desc}>{nft.description}</p>}
+      <div className={styles.myNftInfo}>
+        <h3 className={styles.myNftName}>{nft.name}</h3>
+
+        {nft.description && (
+          <p className={styles.myNftDescription}>{nft.description}</p>
+        )}
 
         <AddToMetamaskButton
           nftAddress={contractsConfig.DnANFT.address}
