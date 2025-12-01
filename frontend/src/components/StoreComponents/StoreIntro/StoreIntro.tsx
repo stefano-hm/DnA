@@ -3,17 +3,16 @@ import styles from './StoreIntro.module.css'
 export function StoreIntro() {
   return (
     <section className={styles.intro}>
-      <h1 className={styles.title}>DnA NFT Store</h1>
+      <h1 className={styles.title}>Scientific Digital Assets</h1>
       <div className={styles.subtitle}>
         <p>
-          Collect unique digital assets inspired by science, human well-being
-          and decentralized technology.
+          Every token in the DnA collection embodies a scientifically-grounded
+          idea, exploring neuroscience, behavior and digital autonomy.
         </p>
         <br />
         <p>
-          Each NFT in this collection represents a unique concept linked to
-          scientific themes, digital identity or human well-being. All assets
-          are permanently stored on-chain and fully owned by the holder.
+          Each asset is secured on-chain, ensuring permanence, transparency and
+          true user ownership.
         </p>
       </div>
     </section>

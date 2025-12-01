@@ -6,8 +6,6 @@ date: '2025-10-28'
 author: 'DnA Research Team'
 image: '/article-images/focus-motivation/img2.jpg'
 level: 'base'
-nftAccess: true
-tags: ['sleep', 'melatonin', 'circadian rhythm']
 ---
 
 Abstract

@@ -1,5 +1,6 @@
 import type { NFTItem } from '../../../types/nft'
 import { AddToMetamaskButton } from '../AddToMetamaskButton/AddToMetamaskButton'
+import { ViewDetailsButton } from '../../Shared/ViewDetailsButton/ViewDetailsButton'
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import styles from './MyNFTCard.module.css'
 
@@ -20,6 +21,8 @@ export function MyNFTCard({ nft }: Props) {
         {nft.description && (
           <p className={styles.myNftDescription}>{nft.description}</p>
         )}
+
+        <ViewDetailsButton tokenId={nft.tokenId} />
 
         <AddToMetamaskButton
           nftAddress={contractsConfig.DnANFT.address}

@@ -1,0 +1,26 @@
+.detailsButton {
+  display: inline-block;
+  margin-top: 4px;
+  margin-bottom: 6px;
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  color: var(--color-accent);
+  text-decoration: none;
+
+  opacity: 0.85;
+  transition:
+    opacity 0.15s ease,
+    color 0.15s ease;
+}
+
+.detailsButton:hover {
+  opacity: 1;
+  color: var(--color-accent-hover, var(--color-accent));
+  text-decoration: underline;
+}
+
+.detailsButton:active {
+  opacity: 0.7;
+}

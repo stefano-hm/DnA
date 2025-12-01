@@ -14,6 +14,7 @@
   position: relative;
   overflow: hidden;
   max-width: 320px;
+  width: 100%;
   backdrop-filter: blur(4px);
 }
 
@@ -32,7 +33,7 @@
 .imageWrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 220px;
   border-radius: var(--radius);
   overflow: hidden;
   background: #0d0d0e;
@@ -76,24 +77,21 @@
   color: var(--color-text);
   font-size: 1.15rem;
   font-weight: 600;
-}
-
-.cardDescription {
-  color: var(--color-text-dim);
-  font-size: 0.95rem;
-  line-height: 1.55;
+  text-align: left;
 }
 
 .priceTag {
-  color: var(--color-accent);
+  color: var(--color-text);
   font-size: 1.1rem;
   font-weight: 600;
   margin-top: 0.3rem;
+  text-align: left;
 }
 
 .ownerText {
   font-size: 0.85rem;
   color: var(--color-text-dim);
+  text-align: left;
 }
 
 .disabledButton {
@@ -107,7 +105,7 @@
 }
 
 .ownerTag {
-  text-align: center;
+  text-align: left;
   margin-top: var(--space-xs);
   color: var(--color-accent);
   font-size: 0.9rem;

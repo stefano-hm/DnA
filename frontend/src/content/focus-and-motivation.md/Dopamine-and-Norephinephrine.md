@@ -7,8 +7,7 @@ author: 'DnA Research Team'
 image: '/article-images/focus-motivation/img1.jpg'
 level: 'base'
 nftAccess: true
-nftId: 3
-tags: ['sleep', 'melatonin', 'circadian rhythm']
+nftId: 2
 ---
 
 Abstract

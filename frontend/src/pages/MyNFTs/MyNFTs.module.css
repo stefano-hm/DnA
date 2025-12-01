@@ -30,14 +30,23 @@
 
 .myNftsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--space-md);
+  gap: 40px;
   justify-content: center;
   justify-items: center;
+
+  grid-template-columns: repeat(auto-fit, 320px);
+
+  width: 100%;
+  margin: 0 auto;
 }
 
 @media (max-width: 768px) {
   .myNftsTitle {
     font-size: 1.7rem;
+  }
+
+  .myNftsGrid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
   }
 }

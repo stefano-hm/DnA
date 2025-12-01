@@ -4,10 +4,8 @@ subtitle: 'Evidence-Based Protocols for Modulating Exercise Performance, Recover
 category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
-image: '/article-images/example.png'
+image: '/article-images/sport-nutrition/img6.jpg'
 level: 'base'
-nftAccess: false
-tags: ['sleep', 'melatonin', 'circadian rhythm']
 ---
 
 Abstract

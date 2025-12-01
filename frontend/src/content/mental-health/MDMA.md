@@ -6,8 +6,8 @@ date: '2025-10-28'
 author: 'DnA Research Team'
 image: '/article-images/mental-health/img3.jpg'
 level: 'base'
-nftAccess: false
-tags: ['sleep', 'melatonin', 'circadian rhythm']
+nftAccess: true
+nftId: 3
 ---
 
 The science of MDMA (3,4-methylenedioxymethamphetamine) focuses on its potent effects on neuromodulators, which are leveraged in a therapeutic context, primarily for Post-Traumatic Stress Disorder (PTSD). MDMA's utility lies not in its recreational use, but in its capacity to create a time-limited state of psychological safety and openness that facilitates emotional processing during psychotherapy.

@@ -4,10 +4,10 @@ subtitle: 'Leveraging the Basal Ganglia and Reward Prediction Error for Automati
 category: 'Neuroplasticity & Behaviour Change'
 date: '2025-10-28'
 author: 'DnA Research Team'
-image: '/article-images/example.png'
+image: '/article-images/neuroplasticity/img3.jpg'
 level: 'base'
-nftAccess: false
-tags: ['sleep', 'melatonin', 'circadian rhythm']
+nftAccess: true
+nftId: 1
 ---
 
 Abstract

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useReadContract } from 'wagmi'
-import { contractsConfig } from '../../../contracts/contractsConfig'
-import { cidToGatewayUrl } from '../../../services/ipfsService'
-import { useWatchBids } from '../../../hooks/useWatchBids'
-import type { AuctionItem } from '../../../types/auction'
+import { contractsConfig } from '../contracts/contractsConfig'
+import { cidToGatewayUrl } from '../services/ipfsService'
+import { useWatchBids } from './useWatchBids'
+import type { AuctionItem } from '../types/auction'
 
 export function useAuctionData() {
   const { address: contractAddress, abi } = contractsConfig.DnAAuctionHouse
@@ -100,7 +100,7 @@ export function useAuctionData() {
   const endedAuctions = auctions.filter(a => !a.active || a.endTime <= now)
 
   return {
-    loading: !auctionCount,
+    loading: auctionCount == null,
     activeAuctions,
     endedAuctions,
   }

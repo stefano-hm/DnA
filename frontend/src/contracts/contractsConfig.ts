@@ -3,11 +3,11 @@ import DnAAuctionHouse from './DnAAuctionHouse.json'
 
 export const contractsConfig = {
   DnANFT: {
-    address: '0x206DcC9CE5Cd1D19AdeB0068B49237F7f8537D55',
+    address: '0x4c86323823af6302D7C4939a80fbD3736305575c',
     abi: DnANFT.abi,
   },
   DnAAuctionHouse: {
-    address: '0x2c103C9507dA2Bd3A0b42D1023723C6bC8Bc812F',
+    address: '0x63e56e871Aff3f479df9C8C82ECe12C7a6D73297',
     abi: DnAAuctionHouse.abi,
   },
 } as const

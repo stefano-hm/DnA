@@ -4,10 +4,8 @@ subtitle: 'The Practical Neurobiology of Enhancing Sleep Quality and Duration'
 category: 'Sleep & Circadian Rhythm'
 date: '2025-10-28'
 author: 'DnA Research Team'
-image: '/article-images/example.png'
+image: '/article-images/sleep/img3.jpg'
 level: 'base'
-nftAccess: false
-tags: ['sleep', 'melatonin', 'circadian rhythm']
 ---
 
 Abstract

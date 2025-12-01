@@ -4,10 +4,10 @@ subtitle: ''
 category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
-image: '/article-images/example.png'
+image: '/article-images/sport-nutrition/img5.jpg'
 level: 'base'
-nftAccess: false
-tags: ['sleep', 'melatonin', 'circadian rhythm']
+nftAccess: true
+nftId: 5
 ---
 
 Abstract

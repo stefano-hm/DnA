@@ -1,11 +1,21 @@
-import { useAuctionData } from '../../components/AuctionHouseComponents/AuctionList/AuctionList'
+import { useAuctionData } from '../../hooks/useAuctionData'
 import { AuctionHeader } from '../../components/AuctionHouseComponents/AuctionHeader/AuctionHeader'
 import { AuctionActive } from '../../components/AuctionHouseComponents/AuctionActive/AuctionActive'
 import { EndedAuctions } from '../../components/AuctionHouseComponents/EndedAuctions/EndedAuctions'
+import { AdminAuctionForm } from '../../components/AuctionHouseComponents/AdminAuctionForm/AdminAuctionForm'
+import { useAccount } from 'wagmi'
 import styles from './AuctionHouse.module.css'
+
+const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS
 
 export default function AuctionHouse() {
   const { loading, activeAuctions, endedAuctions } = useAuctionData()
+  const { address: userAddress } = useAccount()
+
+  const isAdmin =
+    !!userAddress &&
+    !!ADMIN_ADDRESS &&
+    userAddress.toLowerCase() === ADMIN_ADDRESS.toLowerCase()
 
   if (loading) return <p>Loading auctions...</p>
 
@@ -38,6 +48,12 @@ export default function AuctionHouse() {
       <section className={styles.hero}>
         <AuctionHeader />
       </section>
+
+      {isAdmin && (
+        <div className={styles.adminSection}>
+          <AdminAuctionForm />
+        </div>
+      )}
 
       <section className={styles.live}>
         <AuctionActive auctions={formattedActive} />

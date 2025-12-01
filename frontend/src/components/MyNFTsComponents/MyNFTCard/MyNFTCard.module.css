@@ -7,6 +7,8 @@
   flex-direction: column;
   overflow: hidden;
   max-width: 320px;
+  width: 100%;
+
   transition:
     transform var(--transition-fast),
     border-color var(--transition-fast),
@@ -38,18 +40,23 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+
+  text-align: left;
+  align-items: flex-start;
 }
 
 .myNftName {
   color: var(--color-text);
   font-size: 1.2rem;
   font-weight: 600;
+  text-align: left;
 }
 
 .myNftDescription {
   color: var(--color-text-dim);
   font-size: 0.95rem;
   line-height: 1.5;
+  text-align: left;
 }
 
 @media (max-width: 768px) {

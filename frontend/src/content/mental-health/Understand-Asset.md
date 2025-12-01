@@ -4,10 +4,10 @@ subtitle: 'The Core Components: Self-Respect, Psychological Security, and Capaci
 category: 'Mental Health'
 date: '2025-10-28'
 author: 'DnA Research Team'
-image: '/article-images/example.png'
+image: '/article-images/mental-health/img7.jpg'
 level: 'base'
-nftAccess: false
-tags: ['sleep', 'melatonin', 'circadian rhythm']
+nftAccess: true
+nftId: 3
 ---
 
 Abstract

@@ -37,7 +37,7 @@
 }
 
 .storeIntroWrapper {
-  margin-top: 140px;
+  margin: 140px 0 0 0;
   position: relative;
   z-index: 10;
   color: black;
@@ -62,7 +62,7 @@
 
 .storePage {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 3rem auto 0 auto;
   padding: 3rem 4rem;
 }
 
@@ -85,11 +85,13 @@
 
 .nftGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 2rem;
-  margin-top: var(--space-lg);
+  gap: 40px;
   justify-content: center;
   justify-items: center;
+  grid-template-columns: repeat(auto-fit, 320px);
+  max-width: calc(320px * 3 + 40px * 2);
+  margin: 0 auto;
+  width: 100%;
 }
 
 @media (max-width: 900px) {
@@ -128,16 +130,24 @@
 
   .storeIntroWrapper {
     margin-top: 0;
-    padding: 2rem 1.5rem;
+    padding: 2rem 0 2rem 0;
     background: transparent;
     order: 10;
   }
 
   .storePage {
     padding: 2rem 1.5rem;
+    margin-top: 0;
   }
 
   .rightCol {
     order: -2;
+  }
+}
+
+@media (max-width: 768px) {
+  .nftGrid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
   }
 }

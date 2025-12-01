@@ -4,10 +4,8 @@ subtitle: 'The Foundational Role of Self-Respect, Security, and Processing Capac
 category: 'Mental Health'
 date: '2025-10-28'
 author: 'DnA Research Team'
-image: '/article-images/example.png'
+image: '/article-images/mental-health/img6.jpg'
 level: 'base'
-nftAccess: false
-tags: ['sleep', 'melatonin', 'circadian rhythm']
 ---
 
 Dr. Paul Conti's framework for navigating life's challenges, including trauma and mental illness, emphasizes the fundamental goal of therapy: building psychological resilience and processing capacity, rather than merely eliminating symptoms. His approach focuses on establishing a robust internal foundation through self-respect and security.

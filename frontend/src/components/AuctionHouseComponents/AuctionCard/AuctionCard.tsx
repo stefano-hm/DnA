@@ -6,6 +6,7 @@ import { BidForm } from '../BidForm/BidForm'
 import { EndAuctionButton } from '../EndAuctionButton/EndAuctionButton'
 import { ClaimButton } from '../ClaimButton/ClaimButton'
 import { WithdrawButton } from '../WithdrawButton/WithdrawButton'
+import { ViewDetailsButton } from '../../Shared/ViewDetailsButton/ViewDetailsButton'
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import type { AuctionCardProps } from '../../../types/auction'
 
@@ -92,6 +93,10 @@ export function AuctionCard({ auction }: AuctionCardProps) {
             <span>Ends in:</span> {auction.endsIn}
           </p>
         </div>
+
+        {typeof tokenId === 'bigint' && (
+          <ViewDetailsButton tokenId={Number(tokenId)} />
+        )}
 
         {auction.endTime * 1000 > Date.now() && (
           <button

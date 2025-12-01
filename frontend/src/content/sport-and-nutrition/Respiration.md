@@ -4,10 +4,8 @@ subtitle: 'The Medullary Pacemaker and Behavioral Modulation of the Autonomic Ne
 category: 'Sport & Nutrition'
 date: '2025-10-28'
 author: 'DnA Research Team'
-image: '/article-images/example.png'
+image: '/article-images/sport-nutrition/img8.jpg'
 level: 'base'
-nftAccess: false
-tags: ['sleep', 'melatonin', 'circadian rhythm']
 ---
 
 Abstract
