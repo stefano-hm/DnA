@@ -5,6 +5,7 @@ import { EndedAuctions } from '../../components/AuctionHouseComponents/EndedAuct
 import { AdminAuctionForm } from '../../components/AuctionHouseComponents/AdminAuctionForm/AdminAuctionForm'
 import { useAccount } from 'wagmi'
 import styles from './AuctionHouse.module.css'
+import { Footer } from '../../components/HomeComponents/Footer/Footer'
 
 const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS
 
@@ -44,25 +45,28 @@ export default function AuctionHouse() {
   }))
 
   return (
-    <div className={styles.page}>
-      <section className={styles.hero}>
-        <AuctionHeader />
-      </section>
+    <>
+      <div className={styles.page}>
+        <section className={styles.hero}>
+          <AuctionHeader />
+        </section>
 
-      {isAdmin && (
-        <div className={styles.adminSection}>
-          <AdminAuctionForm />
-        </div>
-      )}
+        {isAdmin && (
+          <div className={styles.adminSection}>
+            <AdminAuctionForm />
+          </div>
+        )}
 
-      <section className={styles.live}>
-        <AuctionActive auctions={formattedActive} />
-      </section>
+        <section className={styles.live}>
+          <AuctionActive auctions={formattedActive} />
+        </section>
 
-      <section className={styles.ended}>
-        <EndedAuctions auctions={formattedEnded} />
-      </section>
-    </div>
+        <section className={styles.ended}>
+          <EndedAuctions auctions={formattedEnded} />
+        </section>
+      </div>
+      <Footer />
+    </>
   )
 }
 

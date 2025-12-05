@@ -4,6 +4,7 @@ import { loadArticles } from '../../utils/loadArticles'
 import type { Article } from '../../types/article'
 import { ArticleCard } from '../../components/ArticlesComponents/ArticleCard/ArticleCard'
 import styles from './Articles.module.css'
+import { Footer } from '../../components/HomeComponents/Footer/Footer'
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<Article[]>([])
@@ -55,47 +56,50 @@ export default function ArticlesPage() {
   const rest = filtered.slice(2)
 
   return (
-    <section className={styles.articlesPage}>
-      <h1 className={styles.articlesTitle}>Articles</h1>
+    <>
+      <section className={styles.articlesPage}>
+        <h1 className={styles.articlesTitle}>Articles</h1>
 
-      <div className={styles.categoriesRow}>
-        {categories.map(cat => (
-          <button
-            key={cat}
-            type="button"
-            className={`${styles.categoryPill} ${
-              cat === selectedCategory ? styles.categoryPillActive : ''
-            }`}
-            onClick={() => setSelectedCategory(cat)}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+        <div className={styles.categoriesRow}>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              type="button"
+              className={`${styles.categoryPill} ${
+                cat === selectedCategory ? styles.categoryPillActive : ''
+              }`}
+              onClick={() => setSelectedCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
 
-      {selectedCategory && filtered.length === 0 && (
-        <p className={styles.emptyText}>
-          No articles available for this category.
-        </p>
-      )}
+        {selectedCategory && filtered.length === 0 && (
+          <p className={styles.emptyText}>
+            No articles available for this category.
+          </p>
+        )}
 
-      {filtered.length > 0 && (
-        <>
-          <div className={styles.spotlightGrid}>
-            {spotlight.map(article => (
-              <ArticleCard key={article.slug} article={article} spotlight />
-            ))}
-          </div>
-
-          {rest.length > 0 && (
-            <div className={styles.grid3}>
-              {rest.map(article => (
-                <ArticleCard key={article.slug} article={article} />
+        {filtered.length > 0 && (
+          <>
+            <div className={styles.spotlightGrid}>
+              {spotlight.map(article => (
+                <ArticleCard key={article.slug} article={article} spotlight />
               ))}
             </div>
-          )}
-        </>
-      )}
-    </section>
+
+            {rest.length > 0 && (
+              <div className={styles.grid3}>
+                {rest.map(article => (
+                  <ArticleCard key={article.slug} article={article} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </section>
+      <Footer />
+    </>
   )
 }

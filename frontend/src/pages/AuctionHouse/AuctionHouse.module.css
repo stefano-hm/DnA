@@ -26,6 +26,21 @@
   z-index: 2;
 }
 
+.adminSection {
+  width: 100%;
+  max-width: 720px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: #0b0b0c;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 0 18px rgba(0, 180, 255, 0.08);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .live {
   background: #070707;
   padding: var(--space-xxl) 0;
@@ -43,5 +58,10 @@
   .live,
   .ended {
     padding: var(--space-xl) 0;
+  }
+
+  .adminSection {
+    padding: 1.5rem;
+    margin: 2rem auto;
   }
 }
