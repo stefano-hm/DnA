@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
   mapping(address => bool) public isAdmin;
+
   mapping(uint256 => uint256) public tokenPrice;
 
   uint256 private nextId = 1;
@@ -40,8 +41,12 @@ contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     emit Minted(to, tokenId, uri);
   }
 
-  function setTokenPrice(uint256 tokenId, uint256 priceWei) external onlyAdmin {
-    require(_ownerOf(tokenId) != address(0), "Token does not exist");
+  function setTokenPrice(uint256 tokenId, uint256 priceWei) external {
+    address tokenOwner = _ownerOf(tokenId);
+    require(tokenOwner != address(0), "Token does not exist");
+
+    require(_isAuthorized(tokenOwner, msg.sender, tokenId), "Not owner/approved");
+
     tokenPrice[tokenId] = priceWei;
     emit PriceSet(tokenId, priceWei);
   }
@@ -54,7 +59,7 @@ contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     address seller = ownerOf(tokenId);
     require(seller != msg.sender, "Already owner");
 
-    (bool sent, ) = payable(owner()).call{ value: msg.value }("");
+    (bool sent, ) = payable(seller).call{ value: msg.value }("");
     require(sent, "Payment failed");
 
     _transfer(seller, msg.sender, tokenId);
@@ -68,26 +73,34 @@ contract DnANFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     view
     returns (
       uint256[] memory ids,
-      address[] memory owners,
+      address[] memory owners_,
       string[] memory uris,
       uint256[] memory prices
     )
   {
     uint256 total = allTokenIds.length;
-    ids = new uint256[](total);
-    owners = new address[](total);
-    uris = new string[](total);
-    prices = new uint256[](total);
 
     uint256 count = 0;
     for (uint256 i = 0; i < total; i++) {
       uint256 id = allTokenIds[i];
+      if (_ownerOf(id) != address(0)) count++;
+    }
+
+    ids = new uint256[](count);
+    owners_ = new address[](count);
+    uris = new string[](count);
+    prices = new uint256[](count);
+
+    uint256 index = 0;
+    for (uint256 i = 0; i < total; i++) {
+      uint256 id = allTokenIds[i];
       if (_ownerOf(id) == address(0)) continue;
-      ids[count] = id;
-      owners[count] = ownerOf(id);
-      uris[count] = tokenURI(id);
-      prices[count] = tokenPrice[id];
-      count++;
+
+      ids[index] = id;
+      owners_[index] = ownerOf(id);
+      uris[index] = tokenURI(id);
+      prices[index] = tokenPrice[id];
+      index++;
     }
   }
 

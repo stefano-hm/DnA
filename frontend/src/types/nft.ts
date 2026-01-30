@@ -4,16 +4,18 @@ export type NFTItem = {
   description: string
   image: string
   owner: string
-  price?: string
+  price: string
+  priceWei: bigint
 }
 
 export type NFTCardProps = NFTItem & {
   refetch?: () => void
+  priceWei: bigint
 }
 
 export type BuyButtonProps = {
   tokenId: number
-  price: string
+  priceWei: bigint
   refetch?: () => void
 }
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useReadContract, useWatchContractEvent } from 'wagmi'
+import { formatEther } from 'viem'
 import { contractsConfig } from '../contracts/contractsConfig'
 import type { NFTItem } from '../types/nft'
 import { ipfsToHttp } from '../services/ipfsService'
@@ -36,7 +37,8 @@ export function useNFTs() {
           ids.map(async (id, i) => {
             const tokenId = Number(id)
             const owner = owners[i]
-            const price = (Number(prices[i]) / 1e18).toFixed(3)
+            const priceWei = prices[i]              
+            const priceEth = formatEther(priceWei)  
             const uri = uris[i]
 
             let image = ''
@@ -47,10 +49,7 @@ export function useNFTs() {
               try {
                 const metadataUrl = ipfsToHttp(uri, gatewayDomain)
                 const res = await fetch(metadataUrl)
-
-                if (!res.ok) {
-                  throw new Error(`Fetch failed (${res.status})`)
-                }
+                if (!res.ok) throw new Error(`Fetch failed (${res.status})`)
 
                 const metadata = await res.json()
                 name = metadata.name || `Token #${tokenId}`
@@ -59,16 +58,13 @@ export function useNFTs() {
                   ? ipfsToHttp(metadata.image, gatewayDomain)
                   : ''
               } catch (err) {
-                console.warn(
-                  `Error loading metadata for token ${tokenId}:`,
-                  err
-                )
+                console.warn(`Error loading metadata for token ${tokenId}:`, err)
               }
             } else {
               console.warn(`Token ${tokenId} has an invalid URI: ${uri}`)
             }
 
-            return { tokenId, name, description, image, owner, price }
+            return { tokenId, name, description, image, owner, priceWei, price: priceEth }
           })
         )
 
@@ -84,26 +80,9 @@ export function useNFTs() {
     loadNFTs()
   }, [data, gatewayDomain])
 
-  useWatchContractEvent({
-    address: contractAddress,
-    abi,
-    eventName: 'Minted',
-    onLogs: () => refetch(),
-  })
-
-  useWatchContractEvent({
-    address: contractAddress,
-    abi,
-    eventName: 'PriceSet',
-    onLogs: () => refetch(),
-  })
-
-  useWatchContractEvent({
-    address: contractAddress,
-    abi,
-    eventName: 'Purchased',
-    onLogs: () => refetch(),
-  })
+  useWatchContractEvent({ address: contractAddress, abi, eventName: 'Minted', onLogs: () => refetch() })
+  useWatchContractEvent({ address: contractAddress, abi, eventName: 'PriceSet', onLogs: () => refetch() })
+  useWatchContractEvent({ address: contractAddress, abi, eventName: 'Purchased', onLogs: () => refetch() })
 
   return { nfts, isLoading, error, refetch }
 }

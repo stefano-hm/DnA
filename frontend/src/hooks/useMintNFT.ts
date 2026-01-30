@@ -1,5 +1,5 @@
 import { usePublicClient, useWriteContract } from 'wagmi'
-import { parseEther } from 'viem'
+import { parseEther, decodeEventLog } from 'viem'
 import { contractsConfig } from '../contracts/contractsConfig'
 
 export function useMintNFT() {
@@ -27,17 +27,27 @@ export function useMintNFT() {
       hash: mintHash,
     })
 
-    const transferLog = mintReceipt.logs.find(
-      (l: any) =>
-        Array.isArray(l.topics) &&
-        l.topics.length > 3 &&
-        typeof l.topics[0] === 'string' &&
-        l.topics[0].includes('ddf252ad')
-    )
+    let tokenId: bigint | null = null
 
-    const tokenId = transferLog?.topics?.[3]
-      ? BigInt(transferLog.topics[3] as string)
-      : 1n
+    for (const log of mintReceipt.logs) {
+      try {
+        const decoded = decodeEventLog({
+          abi,
+          data: log.data,
+          topics: log.topics,
+        })
+
+        if (decoded.eventName === 'Minted') {
+          tokenId = (decoded.args as any).tokenId as bigint
+          break
+        }
+      } catch {
+      }
+    }
+
+    if (tokenId === null) {
+      throw new Error('Minted event not found in transaction receipt')
+    }
 
     const priceHash = await writeContractAsync({
       address: contractAddress,
@@ -49,7 +59,8 @@ export function useMintNFT() {
     await publicClient.waitForTransactionReceipt({ hash: priceHash })
 
     if (refetchNFTs) refetchNFTs()
-    return mintHash
+
+    return priceHash
   }
 
   return { mintNFT }

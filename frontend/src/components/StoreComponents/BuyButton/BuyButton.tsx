@@ -3,7 +3,7 @@ import { useBuyNFT } from '../../../hooks/useBuyNFT'
 import type { BuyButtonProps } from '../../../types/nft'
 import styles from './BuyButton.module.css'
 
-export function BuyButton({ tokenId, price, refetch }: BuyButtonProps) {
+export function BuyButton({ tokenId, priceWei, refetch }: BuyButtonProps) {
   const { address: userAddress } = useAccount()
   const { buyNFT } = useBuyNFT(refetch)
 
@@ -12,7 +12,7 @@ export function BuyButton({ tokenId, price, refetch }: BuyButtonProps) {
       alert('Connect your wallet first')
       return
     }
-    await buyNFT(tokenId, price)
+    await buyNFT(tokenId, priceWei)
   }
 
   return (

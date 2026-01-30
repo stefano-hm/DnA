@@ -1,6 +1,5 @@
 import { useWriteContract, usePublicClient, useWatchContractEvent } from 'wagmi'
 import toast from 'react-hot-toast'
-import { parseEther } from 'viem'
 import { contractsConfig } from '../contracts/contractsConfig'
 
 export function useBuyNFT(refetch?: () => void) {
@@ -8,7 +7,7 @@ export function useBuyNFT(refetch?: () => void) {
   const publicClient = usePublicClient()!
   const { writeContractAsync } = useWriteContract()
 
-  const buyNFT = async (tokenId: number, price: string) => {
+  const buyNFT = async (tokenId: number, priceWei: bigint) => {
     try {
       toast.loading('Processing purchase...', { id: 'buy' })
 
@@ -17,7 +16,7 @@ export function useBuyNFT(refetch?: () => void) {
         abi,
         functionName: 'buy',
         args: [BigInt(tokenId)],
-        value: parseEther(price),
+        value: priceWei, 
       })
 
       toast.loading('Waiting for confirmation...', { id: 'buy' })
