@@ -12,11 +12,9 @@ export function WithdrawButton({
 }: WithdrawButtonProps) {
   const { address: auctionAddress, abi } = contractsConfig.DnAAuctionHouse
   const [isWithdrawing, setIsWithdrawing] = useState(false)
-  const [hasWithdrawn, setHasWithdrawn] = useState(false)
   const [pendingAmount, setPendingAmount] = useState<bigint>(0n)
 
   const { withdrawRefund } = useWithdrawRefund(id => {
-    setHasWithdrawn(true)
     onWithdrawn?.(id)
   })
 
@@ -24,23 +22,26 @@ export function WithdrawButton({
     address: auctionAddress,
     abi,
     functionName: 'pendingReturns',
-    args: [BigInt(auctionId), userAddress as `0x${string}`],
+    args: userAddress
+      ? [BigInt(auctionId), userAddress as `0x${string}`]
+      : undefined,
     query: { enabled: !!userAddress },
   })
 
   useEffect(() => {
-    if (typeof amountData === 'bigint' && amountData > 0n) {
+    if (typeof amountData === 'bigint') {
       setPendingAmount(amountData)
     }
   }, [amountData])
 
   const handleWithdraw = async () => {
+    if (!userAddress) return
     setIsWithdrawing(true)
-    await withdrawRefund(auctionId, userAddress!, refetch)
+    await withdrawRefund(auctionId, userAddress, refetch)
     setIsWithdrawing(false)
   }
 
-  if (hasWithdrawn || pendingAmount === 0n) return null
+  if (!userAddress || pendingAmount === 0n) return null
 
   return (
     <button

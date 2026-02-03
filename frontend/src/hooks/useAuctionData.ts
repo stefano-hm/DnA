@@ -5,6 +5,8 @@ import { cidToGatewayUrl } from '../services/ipfsService'
 import { useWatchBids } from './useWatchBids'
 import type { AuctionItem } from '../types/auction'
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 export function useAuctionData() {
   const { address: contractAddress, abi } = contractsConfig.DnAAuctionHouse
   const [auctions, setAuctions] = useState<AuctionItem[]>([])
@@ -46,11 +48,16 @@ export function useAuctionData() {
           id: i,
           nft: a.nft,
           tokenId: Number(a.tokenId),
+          seller: a.seller,
+          claimed: Boolean(a.claimed),
           startingBid: ethers.formatEther(a.startingBid),
           highestBid: ethers.formatEther(a.highestBid),
           endTime: Number(a.endTime),
-          active: a.active,
+          active: Boolean(a.active),
           highestBidder: a.highestBidder,
+          hasWinner:
+            typeof a.highestBidder === 'string' &&
+            a.highestBidder.toLowerCase() !== ZERO_ADDRESS,
         }
 
         try {
@@ -95,9 +102,8 @@ export function useAuctionData() {
     fetchAuctions()
   }, [auctionCount, contractAddress, abi])
 
-  const now = Math.floor(Date.now() / 1000)
-  const activeAuctions = auctions.filter(a => a.active && a.endTime > now)
-  const endedAuctions = auctions.filter(a => !a.active || a.endTime <= now)
+  const activeAuctions = auctions.filter(a => a.active)
+  const endedAuctions = auctions.filter(a => !a.active)
 
   return {
     loading: auctionCount == null,

@@ -7,7 +7,7 @@ export const contractsConfig = {
     abi: DnANFT.abi,
   },
   DnAAuctionHouse: {
-    address: '0x63e56e871Aff3f479df9C8C82ECe12C7a6D73297',
+    address: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
     abi: DnAAuctionHouse.abi,
   },
 } as const

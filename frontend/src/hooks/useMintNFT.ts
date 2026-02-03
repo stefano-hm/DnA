@@ -41,8 +41,7 @@ export function useMintNFT() {
           tokenId = (decoded.args as any).tokenId as bigint
           break
         }
-      } catch {
-      }
+      } catch {}
     }
 
     if (tokenId === null) {

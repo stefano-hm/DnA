@@ -26,7 +26,8 @@ export function EndAuctionButton({
   })
 
   const a = auctionData as unknown[] | undefined
-  const active = a?.[4] as boolean | undefined
+
+  const active = (a?.[5] as boolean | undefined) ?? true
 
   useEffect(() => {
     if (active === false) setHasEnded(true)
@@ -38,7 +39,7 @@ export function EndAuctionButton({
     setIsEnding(false)
   }
 
-  if (hasEnded) return null
+  if (hasEnded || active === false) return null
 
   return (
     <button

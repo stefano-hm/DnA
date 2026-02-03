@@ -7,16 +7,9 @@ import { useAccount } from 'wagmi'
 import styles from './AuctionHouse.module.css'
 import { Footer } from '../../components/HomeComponents/Footer/Footer'
 
-const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS
-
 export default function AuctionHouse() {
   const { loading, activeAuctions, endedAuctions } = useAuctionData()
-  const { address: userAddress } = useAccount()
-
-  const isAdmin =
-    !!userAddress &&
-    !!ADMIN_ADDRESS &&
-    userAddress.toLowerCase() === ADMIN_ADDRESS.toLowerCase()
+  const { isConnected } = useAccount()
 
   if (loading) return <p>Loading auctions...</p>
 
@@ -30,6 +23,10 @@ export default function AuctionHouse() {
     highestBidder: a.highestBidder,
     endTime: a.endTime,
     endsIn: formatEndsIn(a.endTime),
+    seller: a.seller,
+    claimed: a.claimed,
+    hasWinner: a.hasWinner,
+    active: a.active,
   }))
 
   const formattedEnded = endedAuctions.map(a => ({
@@ -42,6 +39,10 @@ export default function AuctionHouse() {
     highestBidder: a.highestBidder,
     endTime: a.endTime,
     endsIn: formatEndsIn(a.endTime),
+    seller: a.seller,
+    claimed: a.claimed,
+    hasWinner: a.hasWinner,
+    active: a.active,
   }))
 
   return (
@@ -51,7 +52,7 @@ export default function AuctionHouse() {
           <AuctionHeader />
         </section>
 
-        {isAdmin && (
+        {isConnected && (
           <div className={styles.adminSection}>
             <AdminAuctionForm />
           </div>

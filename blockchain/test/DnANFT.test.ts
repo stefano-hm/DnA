@@ -109,7 +109,9 @@ describe("DnANFT", function () {
     await nft.connect(admin).mintTo(owner.address, "ipfs://token1");
 
     const price = ethers.parseEther("0.05");
-    await expect(nft.connect(other).setTokenPrice(1, price)).to.be.revertedWith("Not owner/approved");
+    await expect(nft.connect(other).setTokenPrice(1, price)).to.be.revertedWith(
+      "Not owner/approved"
+    );
   });
 
   it("should return only NFTs owned by the given address via getOwnedNFTs", async function () {

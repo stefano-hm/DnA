@@ -37,8 +37,8 @@ export function useNFTs() {
           ids.map(async (id, i) => {
             const tokenId = Number(id)
             const owner = owners[i]
-            const priceWei = prices[i]              
-            const priceEth = formatEther(priceWei)  
+            const priceWei = prices[i]
+            const priceEth = formatEther(priceWei)
             const uri = uris[i]
 
             let image = ''
@@ -58,13 +58,24 @@ export function useNFTs() {
                   ? ipfsToHttp(metadata.image, gatewayDomain)
                   : ''
               } catch (err) {
-                console.warn(`Error loading metadata for token ${tokenId}:`, err)
+                console.warn(
+                  `Error loading metadata for token ${tokenId}:`,
+                  err
+                )
               }
             } else {
               console.warn(`Token ${tokenId} has an invalid URI: ${uri}`)
             }
 
-            return { tokenId, name, description, image, owner, priceWei, price: priceEth }
+            return {
+              tokenId,
+              name,
+              description,
+              image,
+              owner,
+              priceWei,
+              price: priceEth,
+            }
           })
         )
 
@@ -80,9 +91,24 @@ export function useNFTs() {
     loadNFTs()
   }, [data, gatewayDomain])
 
-  useWatchContractEvent({ address: contractAddress, abi, eventName: 'Minted', onLogs: () => refetch() })
-  useWatchContractEvent({ address: contractAddress, abi, eventName: 'PriceSet', onLogs: () => refetch() })
-  useWatchContractEvent({ address: contractAddress, abi, eventName: 'Purchased', onLogs: () => refetch() })
+  useWatchContractEvent({
+    address: contractAddress,
+    abi,
+    eventName: 'Minted',
+    onLogs: () => refetch(),
+  })
+  useWatchContractEvent({
+    address: contractAddress,
+    abi,
+    eventName: 'PriceSet',
+    onLogs: () => refetch(),
+  })
+  useWatchContractEvent({
+    address: contractAddress,
+    abi,
+    eventName: 'Purchased',
+    onLogs: () => refetch(),
+  })
 
   return { nfts, isLoading, error, refetch }
 }

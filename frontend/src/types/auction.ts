@@ -15,6 +15,10 @@ export type Auction = {
   highestBidder?: string
   endTime: number
   endsIn: string
+  active: boolean
+  seller: string
+  claimed: boolean
+  hasWinner: boolean
 }
 
 export type AuctionCardProps = {
@@ -48,6 +52,9 @@ export type AuctionItem = {
   active: boolean
   highestBidder: string
   nft: string
+  seller: string
+  claimed: boolean
+  hasWinner: boolean
   title?: string
   image?: string
 }
@@ -59,9 +66,11 @@ export type EndedAuctionsProps = {
 export type AuctionStruct = {
   nft: string
   tokenId: bigint
+  seller: string
   startingBid: bigint
   endTime: bigint
   active: boolean
+  claimed: boolean
   highestBidder: string
   highestBid: bigint
 }

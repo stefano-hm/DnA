@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { usePlaceBid } from '../../../hooks/usePlaceBid'
 import type { BidFormProps } from '../../../types/auction'
 import styles from './BidForm.module.css'
@@ -15,7 +15,13 @@ export function BidForm({
 
   const now = Math.floor(Date.now() / 1000)
   const isExpired = endTime <= now
-  const minBid = Math.max(Number(startingBid), Number(highestBid))
+
+  const minSuggested = useMemo(() => {
+    const s = Number(String(startingBid).replace(',', '.'))
+    const h = Number(String(highestBid).replace(',', '.'))
+    const base = Number.isFinite(s) && Number.isFinite(h) ? Math.max(s, h) : 0
+    return base + 0.0001
+  }, [startingBid, highestBid])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,7 +41,7 @@ export function BidForm({
           value={amount}
           onChange={e => setAmount(e.target.value)}
           className={styles.bidInput}
-          placeholder={`${(minBid + 0.0001).toFixed(4)} or higher`}
+          placeholder={`${minSuggested.toFixed(4)} or higher`}
           disabled={isExpired}
         />
       </label>

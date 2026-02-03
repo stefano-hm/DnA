@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useAccount, useReadContract } from 'wagmi'
 import styles from './AuctionCard.module.css'
 import { Modal } from '../Modal/Modal'
@@ -10,21 +10,20 @@ import { ViewDetailsButton } from '../../Shared/ViewDetailsButton/ViewDetailsBut
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import type { AuctionCardProps } from '../../../types/auction'
 
-const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export function AuctionCard({ auction }: AuctionCardProps) {
   const [isBidOpen, setIsBidOpen] = useState(false)
   const [claimedLocal, setClaimedLocal] = useState(false)
   const [endedLocal, setEndedLocal] = useState(false)
+
   const { address: userAddress } = useAccount()
 
   const isWinner =
     !!userAddress &&
     !!auction.highestBidder &&
+    auction.highestBidder.toLowerCase() !== ZERO_ADDRESS &&
     userAddress.toLowerCase() === auction.highestBidder.toLowerCase()
-
-  const isAdmin =
-    !!userAddress && userAddress.toLowerCase() === ADMIN_ADDRESS.toLowerCase()
 
   const { data: auctionStruct } = useReadContract({
     address: contractsConfig.DnAAuctionHouse.address,
@@ -34,33 +33,36 @@ export function AuctionCard({ auction }: AuctionCardProps) {
   })
 
   const a = auctionStruct as unknown[] | undefined
-  const nftAddress = a?.[0] as string | undefined
+
   const tokenId = a?.[1] as bigint | undefined
-  const endTime = a?.[3] as bigint | undefined
-  const auctionActive = (a?.[4] as boolean) ?? true
+  const endTime = a?.[4] as bigint | undefined
+  const auctionActive = (a?.[5] as boolean) ?? auction.active
+  const claimedOnChain = (a?.[6] as boolean) ?? auction.claimed
+  const highestBidderOnChain = (a?.[7] as string) ?? auction.highestBidder
 
-  const { data: ownerOnChain } = useReadContract({
-    address: nftAddress as `0x${string}` | undefined,
-    abi: contractsConfig.DnANFT.abi,
-    functionName: 'ownerOf',
-    args: tokenId ? [tokenId] : undefined,
-    query: { enabled: !!nftAddress && !!tokenId },
-  })
+  const hasWinnerOnChain =
+    typeof highestBidderOnChain === 'string' &&
+    highestBidderOnChain.toLowerCase() !== ZERO_ADDRESS
 
-  const ownerString = ownerOnChain as string | undefined
-  const nftClaimed =
-    !!ownerString &&
-    ownerString.toLowerCase() !==
-      contractsConfig.DnAAuctionHouse.address.toLowerCase()
+  const isClaimed = claimedLocal || claimedOnChain
+  const nowMs = Date.now()
 
-  const auctionExpiredByTime =
-    (endTime ? Number(endTime) * 1000 : 0) <= Date.now()
+  const auctionExpiredByTime = useMemo(() => {
+    if (!endTime) return auction.endTime * 1000 <= nowMs
+    return Number(endTime) * 1000 <= nowMs
+  }, [endTime, auction.endTime, nowMs])
 
   const shouldShowEndButton =
-    isAdmin && !endedLocal && auctionActive && auctionExpiredByTime
+    !endedLocal && auctionActive && auctionExpiredByTime
 
   const shouldShowClaimButton =
-    isWinner && !claimedLocal && !auctionActive && !nftClaimed
+    isWinner && !auctionActive && hasWinnerOnChain && !isClaimed
+
+  const canBid = auctionActive && !auctionExpiredByTime
+
+  const showWinnerText = !auctionActive && hasWinnerOnChain
+
+  const isNoBidEnded = !auctionActive && !hasWinnerOnChain
 
   return (
     <div className={styles.auctionCard}>
@@ -74,18 +76,22 @@ export function AuctionCard({ auction }: AuctionCardProps) {
       <div className={styles.cardContent}>
         <h3 className={styles.cardTitle}>{auction.title}</h3>
 
-        {auctionExpiredByTime && auction.highestBidder && (
+        {showWinnerText && (
           <p className={styles.winnerText}>
-            <span>Winner: </span> {auction.highestBidder.slice(0, 6)}...
-            {auction.highestBidder.slice(-4)}
+            <span>Winner: </span> {highestBidderOnChain.slice(0, 6)}...
+            {highestBidderOnChain.slice(-4)}
+          </p>
+        )}
+
+        {isNoBidEnded && (
+          <p className={styles.winnerText}>
+            <span>Status: </span> No bids (NFT returned)
           </p>
         )}
 
         <div className={styles.infoRow}>
           <p className={styles.bidText}>
-            <span>
-              {auctionExpiredByTime ? 'Winning bid:' : 'Current bid:'}
-            </span>{' '}
+            <span>{!auctionActive ? 'Winning bid:' : 'Current bid:'}</span>{' '}
             {auction.currentBid}
           </p>
 
@@ -98,7 +104,7 @@ export function AuctionCard({ auction }: AuctionCardProps) {
           <ViewDetailsButton tokenId={Number(tokenId)} />
         )}
 
-        {auction.endTime * 1000 > Date.now() && (
+        {canBid && (
           <button
             className={styles.bidButton}
             onClick={() => setIsBidOpen(true)}
@@ -121,7 +127,7 @@ export function AuctionCard({ auction }: AuctionCardProps) {
           />
         )}
 
-        {!isWinner && !isAdmin && !auctionActive && auctionExpiredByTime && (
+        {userAddress && (
           <WithdrawButton
             auctionId={auction.id}
             userAddress={userAddress}
@@ -129,6 +135,12 @@ export function AuctionCard({ auction }: AuctionCardProps) {
               console.log(`Refund claimed for auction ${auction.id}`)
             }
           />
+        )}
+
+        {isWinner && !auctionActive && hasWinnerOnChain && isClaimed && (
+          <p className={styles.winnerText}>
+            <span>Status: </span> Claimed
+          </p>
         )}
       </div>
 

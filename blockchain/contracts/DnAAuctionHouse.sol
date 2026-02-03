@@ -9,16 +9,17 @@ interface IDnANFT {
   function getApproved(uint256 tokenId) external view returns (address);
   function isApprovedForAll(address owner, address operator) external view returns (bool);
   function transferFrom(address from, address to, uint256 tokenId) external;
-  function owner() external view returns (address);
 }
 
 contract DnAAuctionHouse is Ownable, ReentrancyGuard {
   struct Auction {
     address nft;
     uint256 tokenId;
+    address seller;
     uint256 startingBid;
     uint64 endTime;
     bool active;
+    bool claimed;
     address highestBidder;
     uint256 highestBid;
   }
@@ -26,14 +27,13 @@ contract DnAAuctionHouse is Ownable, ReentrancyGuard {
   mapping(uint256 => Auction) public auctions;
   uint256 public auctionCount;
 
-  mapping(address => bool) public isAdmin;
   mapping(uint256 => mapping(address => uint256)) public pendingReturns;
 
-  event AdminUpdated(address indexed admin, bool enabled);
   event AuctionStarted(
     uint256 indexed auctionId,
     address indexed nft,
     uint256 indexed tokenId,
+    address seller,
     uint256 startingBid,
     uint64 endTime
   );
@@ -44,32 +44,28 @@ contract DnAAuctionHouse is Ownable, ReentrancyGuard {
 
   constructor() Ownable(msg.sender) {}
 
-  modifier onlyAdmin() {
-    require(msg.sender == owner() || isAdmin[msg.sender], "Not admin");
-    _;
-  }
-
-  function setAdmin(address account, bool enabled) external onlyOwner {
-    isAdmin[account] = enabled;
-    emit AdminUpdated(account, enabled);
-  }
-
   function startAuction(
     address nft,
     uint256 tokenId,
     uint256 startingBid,
     uint64 durationSeconds
-  ) external onlyAdmin returns (uint256) {
+  ) external returns (uint256) {
     require(durationSeconds >= 60, "Duration too short");
     require(startingBid > 0, "Invalid starting bid");
 
     IDnANFT token = IDnANFT(nft);
     address currentOwner = token.ownerOf(tokenId);
 
+    bool callerAuthorized = (msg.sender == currentOwner) ||
+      (token.getApproved(tokenId) == msg.sender) ||
+      (token.isApprovedForAll(currentOwner, msg.sender));
+
+    require(callerAuthorized, "Not owner/approved");
+
     require(
       token.getApproved(tokenId) == address(this) ||
         token.isApprovedForAll(currentOwner, address(this)),
-      "Auction not approved"
+      "AuctionHouse not approved"
     );
 
     token.transferFrom(currentOwner, address(this), tokenId);
@@ -81,14 +77,16 @@ contract DnAAuctionHouse is Ownable, ReentrancyGuard {
     auctions[newId] = Auction({
       nft: nft,
       tokenId: tokenId,
+      seller: currentOwner,
       startingBid: startingBid,
       endTime: endTime,
       active: true,
+      claimed: false,
       highestBidder: address(0),
       highestBid: 0
     });
 
-    emit AuctionStarted(newId, nft, tokenId, startingBid, endTime);
+    emit AuctionStarted(newId, nft, tokenId, currentOwner, startingBid, endTime);
     return newId;
   }
 
@@ -129,12 +127,15 @@ contract DnAAuctionHouse is Ownable, ReentrancyGuard {
 
     emit AuctionEnded(auctionId, a.highestBidder, a.highestBid);
 
-    if (a.highestBidder != address(0) && a.highestBid > 0) {
-      IDnANFT token = IDnANFT(a.nft);
-      address seller = token.owner();
-      (bool sent, ) = payable(seller).call{ value: a.highestBid }("");
-      require(sent, "Payout failed");
+    IDnANFT token = IDnANFT(a.nft);
+
+    if (a.highestBidder == address(0)) {
+      token.transferFrom(address(this), a.seller, a.tokenId);
+      return;
     }
+
+    (bool sent, ) = payable(a.seller).call{ value: a.highestBid }("");
+    require(sent, "Payout failed");
   }
 
   function claim(uint256 auctionId) external nonReentrant {
@@ -142,6 +143,9 @@ contract DnAAuctionHouse is Ownable, ReentrancyGuard {
     require(!a.active, "Auction still active");
     require(a.highestBidder != address(0), "No winner");
     require(msg.sender == a.highestBidder, "Not winner");
+
+    require(!a.claimed, "Already claimed");
+    a.claimed = true;
 
     IDnANFT token = IDnANFT(a.nft);
     token.transferFrom(address(this), msg.sender, a.tokenId);

@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast'
 import { useWriteContract } from 'wagmi'
 import { waitForTransactionReceipt } from '@wagmi/core'
-import { parseEther } from 'ethers'
+import { parseEther } from 'viem'
 import { contractsConfig } from '../contracts/contractsConfig'
 import { wagmiConfig } from '../wagmiConfig'
 
@@ -18,26 +18,41 @@ export function usePlaceBid() {
     onSuccess?: () => void
   ) => {
     const now = Math.floor(Date.now() / 1000)
-    const bidValue = Number(amount)
-    const minRequired = Math.max(Number(startingBid), Number(highestBid))
+
+    const normalizedAmount = amount.replace(',', '.')
+    const normalizedStarting = String(startingBid).replace(',', '.')
+    const normalizedHighest = String(highestBid).replace(',', '.')
+
+    const bidValue = Number(normalizedAmount)
+    const minRequired = Math.max(
+      Number(normalizedStarting),
+      Number(normalizedHighest)
+    )
 
     if (endTime <= now) {
       toast.error('This auction has already ended')
-      return
+      return null
     }
 
-    if (!amount || isNaN(bidValue)) {
+    if (!normalizedAmount || Number.isNaN(bidValue)) {
       toast.error('Enter a valid amount')
-      return
+      return null
     }
 
     if (bidValue <= minRequired) {
-      toast.error(`Bid must be higher than ${minRequired} ETH`)
-      return
+      toast.error(`Bid must be higher than ${minRequired.toFixed(4)} ETH`)
+      return null
+    }
+
+    let valueWei: bigint
+    try {
+      valueWei = parseEther(normalizedAmount)
+    } catch {
+      toast.error('Invalid bid format')
+      return null
     }
 
     try {
-      toast.dismiss('bidTx')
       toast.loading('Submitting bid...', { id: 'bidTx' })
 
       const hash = await writeContractAsync({
@@ -45,7 +60,7 @@ export function usePlaceBid() {
         abi,
         functionName: 'bid',
         args: [BigInt(auctionId)],
-        value: parseEther(amount),
+        value: valueWei,
       })
 
       await waitForTransactionReceipt(wagmiConfig, { hash })
@@ -55,17 +70,23 @@ export function usePlaceBid() {
       return hash
     } catch (err: any) {
       console.error(err)
-      toast.dismiss('bidTx')
 
       const raw = err?.message || ''
       let msg = 'Bid failed'
+
       if (raw.includes('ACTION_REJECTED')) msg = 'Transaction rejected by user.'
+      else if (raw.includes('Bid too low'))
+        msg = 'Bid too low. Increase your bid.'
+      else if (raw.includes('Auction ended'))
+        msg = 'This auction has already ended.'
+      else if (raw.includes('Auction not active'))
+        msg = 'This auction is not active.'
       else if (raw.includes('insufficient funds'))
-        msg = 'Insufficient funds for gas or transaction.'
-      else if (raw.includes('execution reverted'))
-        msg = 'Bid rejected by contract rules.'
+        msg = 'Insufficient funds for gas or bid.'
       else if (raw.includes('timeout') || raw.includes('network error'))
         msg = 'Network issue or RPC timeout.'
+      else if (raw.includes('execution reverted'))
+        msg = 'Bid rejected by contract rules.'
 
       toast.error(msg, { id: 'bidTx' })
       return null

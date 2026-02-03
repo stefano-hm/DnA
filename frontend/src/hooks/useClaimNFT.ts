@@ -1,20 +1,15 @@
 import toast from 'react-hot-toast'
 import { useWriteContract } from 'wagmi'
-import { waitForTransactionReceipt, readContract } from '@wagmi/core'
+import { waitForTransactionReceipt } from '@wagmi/core'
 import { contractsConfig } from '../contracts/contractsConfig'
 import { wagmiConfig } from '../wagmiConfig'
-import type { AuctionStruct } from '../types/auction'
 
 export function useClaimNFT(onClaimed?: (id: number) => void) {
   const { writeContractAsync } = useWriteContract()
   const { address: auctionAddress, abi } = contractsConfig.DnAAuctionHouse
 
-  const claimNFT = async (auctionId: number, auctionData?: AuctionStruct) => {
-    const nftAddress = auctionData?.nft
-    const tokenId = auctionData?.tokenId
-
+  const claimNFT = async (auctionId: number) => {
     try {
-      toast.dismiss('claimTx')
       toast.loading(`Claiming NFT from auction #${auctionId}...`, {
         id: 'claimTx',
       })
@@ -28,52 +23,34 @@ export function useClaimNFT(onClaimed?: (id: number) => void) {
 
       await waitForTransactionReceipt(wagmiConfig, { hash })
 
-      await new Promise(res => setTimeout(res, 4000))
-
-      if (!nftAddress || tokenId === undefined) {
-        toast.success(`NFT from auction #${auctionId} successfully claimed!`, {
-          id: 'claimTx',
-        })
-        onClaimed?.(auctionId)
-        return
-      }
-
-      const newOwner = (await readContract(wagmiConfig, {
-        address: nftAddress as `0x${string}`,
-        abi: contractsConfig.DnANFT.abi,
-        functionName: 'ownerOf',
-        args: [tokenId],
-      })) as string
-
-      const nftClaimed =
-        !!newOwner && newOwner.toLowerCase() !== auctionAddress.toLowerCase()
-
-      if (nftClaimed) {
-        toast.success(`NFT from auction #${auctionId} successfully claimed!`, {
-          id: 'claimTx',
-        })
-        onClaimed?.(auctionId)
-      } else {
-        toast.error(
-          'Claim transaction confirmed, but NFT owner not updated yet. Try again shortly.',
-          { id: 'claimTx' }
-        )
-      }
+      toast.success(`NFT from auction #${auctionId} successfully claimed!`, {
+        id: 'claimTx',
+      })
+      onClaimed?.(auctionId)
+      return hash
     } catch (err: any) {
       console.error(err)
-      toast.dismiss('claimTx')
 
       const raw = err?.message || ''
-      let msg = 'Failed to claim NFT. Please try again.'
+      let msg = 'Failed to claim NFT.'
+
       if (raw.includes('ACTION_REJECTED')) msg = 'Transaction rejected by user.'
+      else if (raw.includes('Already claimed'))
+        msg = 'This auction has already been claimed.'
+      else if (raw.includes('Not winner'))
+        msg = 'Only the winning bidder can claim this NFT.'
+      else if (raw.includes('No winner')) msg = 'No winner for this auction.'
+      else if (raw.includes('Auction still active'))
+        msg = 'Auction is still active.'
       else if (raw.includes('insufficient funds'))
-        msg = 'Insufficient funds for gas or transaction.'
-      else if (raw.includes('execution reverted'))
-        msg = 'The claim could not be processed. Try again later.'
+        msg = 'Insufficient funds for gas.'
       else if (raw.includes('timeout') || raw.includes('network error'))
         msg = 'Network issue or RPC timeout.'
+      else if (raw.includes('execution reverted'))
+        msg = 'Claim reverted by the contract.'
 
       toast.error(msg, { id: 'claimTx' })
+      return null
     }
   }
 

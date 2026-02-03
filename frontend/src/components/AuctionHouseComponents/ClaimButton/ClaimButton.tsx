@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useReadContract } from 'wagmi'
 import { contractsConfig } from '../../../contracts/contractsConfig'
 import { useClaimNFT } from '../../../hooks/useClaimNFT'
@@ -8,10 +8,10 @@ import styles from './ClaimButton.module.css'
 export function ClaimButton({ auctionId, onClaimed }: ClaimButtonProps) {
   const { address: auctionAddress, abi } = contractsConfig.DnAAuctionHouse
   const [isClaiming, setIsClaiming] = useState(false)
-  const [isClaimed, setIsClaimed] = useState(false)
+  const [isClaimedLocal, setIsClaimedLocal] = useState(false)
 
   const { claimNFT } = useClaimNFT(id => {
-    setIsClaimed(true)
+    setIsClaimedLocal(true)
     onClaimed?.(id)
   })
 
@@ -23,10 +23,17 @@ export function ClaimButton({ auctionId, onClaimed }: ClaimButtonProps) {
   })
 
   const a = auctionData as AuctionStruct | undefined
+  const claimedOnChain = a?.claimed ?? false
+
+  const isClaimed = isClaimedLocal || claimedOnChain
+
+  useEffect(() => {
+    if (claimedOnChain) setIsClaimedLocal(true)
+  }, [claimedOnChain])
 
   const handleClaim = async () => {
     setIsClaiming(true)
-    await claimNFT(auctionId, a)
+    await claimNFT(auctionId)
     setIsClaiming(false)
   }
 

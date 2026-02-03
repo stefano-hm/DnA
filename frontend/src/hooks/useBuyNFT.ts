@@ -16,7 +16,7 @@ export function useBuyNFT(refetch?: () => void) {
         abi,
         functionName: 'buy',
         args: [BigInt(tokenId)],
-        value: priceWei, 
+        value: priceWei,
       })
 
       toast.loading('Waiting for confirmation...', { id: 'buy' })

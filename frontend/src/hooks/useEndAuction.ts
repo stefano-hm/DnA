@@ -9,7 +9,6 @@ export function useEndAuction(onEnded?: (id: number) => void) {
 
   const endAuction = async (auctionId: number) => {
     try {
-      toast.dismiss('endTx')
       toast.loading(`Ending auction #${auctionId}...`, { id: 'endTx' })
 
       const txHash = await writeContractAsync({
@@ -29,17 +28,21 @@ export function useEndAuction(onEnded?: (id: number) => void) {
       return txHash
     } catch (err: any) {
       console.error(err)
-      toast.dismiss('endTx')
 
       const raw = err?.message || ''
-      let msg = 'Failed to end auction. Please try again.'
+      let msg = 'Failed to end auction.'
+
       if (raw.includes('ACTION_REJECTED')) msg = 'Transaction rejected by user.'
+      else if (raw.includes('Auction not ended yet'))
+        msg = 'Too early: the auction is not ended yet.'
+      else if (raw.includes('Auction not active'))
+        msg = 'This auction is already closed.'
       else if (raw.includes('insufficient funds'))
-        msg = 'Insufficient funds for gas or transaction.'
-      else if (raw.includes('execution reverted'))
-        msg = 'The auction could not be ended — possibly already closed.'
+        msg = 'Insufficient funds for gas.'
       else if (raw.includes('timeout') || raw.includes('network error'))
         msg = 'Network issue or RPC timeout.'
+      else if (raw.includes('execution reverted'))
+        msg = 'End reverted by the contract.'
 
       toast.error(msg, { id: 'endTx' })
       return null
