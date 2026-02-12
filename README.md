@@ -9,13 +9,46 @@ The platform hosts neuroscience-focused articles divided into five categories. S
 
 DnA includes:
 
-- An on-chain NFT collection
-- An on-chain Auction House
-- A full Web3-enabled frontend (React, Wagmi, RainbowKit)
+- A fully decentralized ERC721 NFT collection
+- A decentralized on-chain Auction House
+- A Web3-enabled frontend (React, Wagmi, RainbowKit)
 - IPFS/Pinata integration for decentralized storage
-- Real ownership checks to unlock protected content
+- Real on-chain ownership checks for gated content
+- Decentralized marketplace logic (no custodial admin control)
 
 The goal is to create a transparent, verifiable and decentralized environment for distributing digital scientific content.
+
+## Project Structure
+
+```bash
+Dna/
+│
+├── blockchain/
+│   ├── contracts/
+│   │   ├── DnANFT.sol
+│   │   └── DnAAuctionHouse.sol
+│   ├── scripts/
+│   │   └── deploy.ts
+│   ├── test/
+│   │   ├── DnANFT.test.ts
+│   │   └── DnAAuctionHouse.test.ts
+│   └── hardhat.config.ts
+│
+└── frontend/
+    ├── public/                 # Images, favicon, SEO assets
+    └── src/
+        ├── main.tsx
+        ├── App.tsx
+        ├── wagmiConfig.ts
+        ├── components/
+        ├── contracts/          # ABIs + contract config
+        ├── hooks/
+        ├── pages/
+        ├── services/           # IPFS, Pinata handlers
+        ├── styles/
+        ├── types/
+        └── utils/              # loadArticles.ts
+```
 
 ## Features
 
@@ -26,6 +59,7 @@ The goal is to create a transparent, verifiable and decentralized environment fo
 - Sorting, filtering and category navigation
 - Featured articles on the homepage
 - **NFT-gated access** for premium content
+- Real-time on-chain ownership verification
 
 ### NFT System
 
@@ -36,37 +70,70 @@ Each NFT has:
 - Metadata stored on **IPFS (Pinata)**
 - Image stored on **IPFS (Pinata)**
 - URI returned via metadata JSON
-- Price set by the admin
+- Price set by the NFT owner
 
 Users can:
 
 - View all NFTs
 - Buy NFTs directly from the Store
-- Open the NFT Detail page for metadata, description, owner, price, etc.
+- Open the NFT Detail page 
 - Add NFTs to MetaMask
+- Set or remove the price of NFTs they own
+- Transfer ownership via auction or marketplace
 
-Admins can:
+Minting:
 
-- Mint new NFTs
-- Upload images + metadata to IPFS
-- Set token prices
-- Add new NFT details via forms
-- Only available to the admin wallet
+- Admin can mint NFTs
+- After minting, price must be explicitly set
+- Mint and price are separated transactions for clarity
+
+### Decentralized Marketplace Logic
+
+The NFT marketplace logic is fully decentralized:
+
+- The seller receives payment directly
+- The contract owner is never paid during buy()
+- Only the NFT owner can set or remove the price
+- Admin cannot list NFTs owned by other users
+- ```getAllNFTs``` returns a clean filtered array without empty slots
 
 ### Auction House
 
-Admins can start auctions on minted NFTs
+The Auction House is fully decentralized.
 
-- Auctions include: starting bid and end time
+Any NFT owner can start an auction for their token.
+
+Auction flow:
+
+1. NFT owner approves the AuctionHouse contract
+2. NFT owner starts the auction
+3. NFT is transferred to the AuctionHouse contract
+4. Users place bids
+
+After expiration:
+
+- Seller receives highest bid
+- Winner claims NFT
+- Losing bidders withdraw refunds
+
+Security features:
+
+- ReentrancyGuard
+- Refund tracking via pendingReturns
+- claimed flag to prevent double claim
+- Seller is stored inside the Auction struct
+- Payment is sent to seller (not contract owner)
+- Auction cannot be ended twice
 
 Users can:
 
-- place bids
-- increase bids
-- withdraw losing bids after the auction
-- claim the NFT if they are the winner
+- Place bids
+- Increase bids
+- Withdraw losing bids
+- Claim NFT if winner
+- End auction after expiration (anyone can trigger settlement)
 
-Events automatically update the UI
+UI updates automatically via event listeners.
 
 ### NFT-Gated Articles
 
@@ -113,46 +180,20 @@ This ensures **true on-chain permissioning**, without local caching or faked che
 - **Hardhat**
 - **Solidity 0.8.24**
 - **OpenZeppelin Contracts**
+- **ReentrancyGuard**
+- **Local Hardhat testing**
 - **Sepolia Testnet deployment**
 - Full testing suite (```contracts/test```)
-
-## Project Structure
-
-```bash
-Dna/
-│
-├── blockchain/
-│   ├── contracts/
-│   │   ├── DnANFT.sol
-│   │   └── DnAAuctionHouse.sol
-│   ├── scripts/
-│   │   └── deploy.ts
-│   ├── test/
-│   │   ├── DnANFT.test.ts
-│   │   └── DnAAuctionHouse.test.ts
-│   └── hardhat.config.ts
-│
-└── frontend/
-    ├── public/                 # Images, favicon, SEO assets
-    └── src/
-        ├── main.tsx
-        ├── App.tsx
-        ├── wagmiConfig.ts
-        ├── components/
-        ├── contracts/          # ABIs + contract config
-        ├── hooks/
-        ├── pages/
-        ├── services/           # IPFS, Pinata handlers
-        ├── styles/
-        ├── types/
-        └── utils/              # loadArticles.ts
-```
 
 ## Roles & Permissions
 
 ### Admin (frontend)
 
-The admin is determined **off-chain**, via:
+The admin is determined **on-chain**, via:
+
+```bash
+setAdmin(address, bool)
+```
 
 ```bash
 VITE_ADMIN_ADDRESS=<wallet>
@@ -164,16 +205,24 @@ Admin can:
 
 - Mint new NFTs
 - Upload images + metadata to IPFS
-- Set NFT prices
+- Set initial NFT prices
 - Add title + description to NFTs
-- Start auctions
-- Set starting bid for auctions
 
 Admin-only UI is shown in:
 
 - ```/Store``` → MintForm
 
-- ```/AuctionHouse``` → AdminAuctionForm
+### Standard User
+
+Users can:
+
+- Buy NFTs
+- Set price of owned NFTs
+- Start auctions for owned NFTs
+- Place bids
+- Withdraw refunds
+- Claim NFTs
+- Unlock NFT-gated articles
 
 ### Admin (smart contracts)
 
@@ -184,21 +233,6 @@ setAdmin(address, bool)
 ```
 
 However, ***only the address in** ```VITE_ADMIN_ADDRESS``` **sees admin UI**.
-
-(Important distinction documented clearly.)
-
-### Standard User
-
-A normal connected wallet can:
-
-- Buy NFTs
-- View NFT metadata
-- Bid in auctions
-- Increase bids
-- Withdraw refund after losing an auction
-- Claim NFT if auction is won
-- Add NFTs to MetaMask
-- Access articles unlocked by owned NFTs
 
 ## Pages
 
@@ -242,8 +276,6 @@ Three sections:
 - **Active Auctions**
 - **Ended Auctions**
 
-Admin-only auction creation form appears for admin wallet.
-
 ### My NFTs
 
 - List of NFTs owned by the current wallet
@@ -260,9 +292,10 @@ Admin-only auction creation form appears for admin wallet.
 
 - ERC721 with URI storage
 - Admin-controlled minting
-- IPFS metadata
-- Token price management
-- Secure marketplace-style ```buy()```
+- Decentralize price setting
+- Seller-paid ```buy()```
+- Owner-restricted ```setTokenPrice()```
+- ```getAllNFTs``` fixed to avoid empty array slots
 
 **Events**:
 
@@ -283,11 +316,12 @@ Admin-only auction creation form appears for admin wallet.
 
 ### DnAAuctionHouse.sol
 
-- On-chain auction system for NFTs
-- Admin can list NFTs for auction
-- Bidding system with refund tracking
-- Secure claim + withdrawal
-- Uses ```ReentrancyGuard```
+- Decentralize auction system
+- Seller stored in Auction struct
+- Payment sent to seller
+- ```claim()``` protected by claimed flag
+- Refund system for losing bidders
+- Anyone can end expired auction
 
 **Events**:
 
@@ -296,6 +330,12 @@ Admin-only auction creation form appears for admin wallet.
 - ```Withdrawn```
 - ```AuctionEnded```
 - ```Claimed```
+
+**Security**:
+
+- ReentrancyGuard
+- Double-claim prevention
+- Seller-protected payouts
 
 **Deployed to Sepolia at:**
 

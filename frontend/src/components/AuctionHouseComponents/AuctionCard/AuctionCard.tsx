@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAccount, useReadContract } from 'wagmi'
 import styles from './AuctionCard.module.css'
 import { Modal } from '../Modal/Modal'
@@ -12,12 +12,33 @@ import type { AuctionCardProps } from '../../../types/auction'
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
+function formatEndsInLive(endTimeSec: number, nowMs: number): string {
+  const nowSec = Math.floor(nowMs / 1000)
+  const diff = endTimeSec - nowSec
+  if (diff <= 0) return 'Ended'
+  const hours = Math.floor(diff / 3600)
+  const minutes = Math.floor((diff % 3600) / 60)
+  const seconds = diff % 60
+  return `${hours}h ${minutes}m ${seconds}s`
+}
+
 export function AuctionCard({ auction }: AuctionCardProps) {
   const [isBidOpen, setIsBidOpen] = useState(false)
   const [claimedLocal, setClaimedLocal] = useState(false)
   const [endedLocal, setEndedLocal] = useState(false)
 
+  const [nowMs, setNowMs] = useState(Date.now())
+  useEffect(() => {
+    if (!auctionActive) return
+    const t = setInterval(() => setNowMs(Date.now()), 1000)
+    return () => clearInterval(t)
+  }, [])
+
   const { address: userAddress } = useAccount()
+
+  const normalizedUser = userAddress?.toLowerCase()
+  const isSeller =
+    !!normalizedUser && normalizedUser === auction.seller.toLowerCase()
 
   const isWinner =
     !!userAddress &&
@@ -35,7 +56,7 @@ export function AuctionCard({ auction }: AuctionCardProps) {
   const a = auctionStruct as unknown[] | undefined
 
   const tokenId = a?.[1] as bigint | undefined
-  const endTime = a?.[4] as bigint | undefined
+  const endTimeOnChain = a?.[4] as bigint | undefined
   const auctionActive = (a?.[5] as boolean) ?? auction.active
   const claimedOnChain = (a?.[6] as boolean) ?? auction.claimed
   const highestBidderOnChain = (a?.[7] as string) ?? auction.highestBidder
@@ -45,24 +66,34 @@ export function AuctionCard({ auction }: AuctionCardProps) {
     highestBidderOnChain.toLowerCase() !== ZERO_ADDRESS
 
   const isClaimed = claimedLocal || claimedOnChain
-  const nowMs = Date.now()
 
-  const auctionExpiredByTime = useMemo(() => {
-    if (!endTime) return auction.endTime * 1000 <= nowMs
-    return Number(endTime) * 1000 <= nowMs
-  }, [endTime, auction.endTime, nowMs])
+  const endTimeSec = useMemo(() => {
+    if (endTimeOnChain) return Number(endTimeOnChain)
+    return auction.endTime
+  }, [endTimeOnChain, auction.endTime])
+
+  const endsInText = useMemo(
+    () => formatEndsInLive(endTimeSec, nowMs),
+    [endTimeSec, nowMs]
+  )
+
+  const auctionExpiredByTime = endTimeSec * 1000 <= nowMs
 
   const shouldShowEndButton =
-    !endedLocal && auctionActive && auctionExpiredByTime
+    !endedLocal &&
+    auctionActive &&
+    auctionExpiredByTime &&
+    (isSeller || isWinner)
 
   const shouldShowClaimButton =
     isWinner && !auctionActive && hasWinnerOnChain && !isClaimed
 
   const canBid = auctionActive && !auctionExpiredByTime
-
   const showWinnerText = !auctionActive && hasWinnerOnChain
-
   const isNoBidEnded = !auctionActive && !hasWinnerOnChain
+
+  const bidLabel = !auctionActive ? 'Winning bid:' : 'Current bid:'
+  const bidValueText = `${auction.highestBid} ETH`
 
   return (
     <div className={styles.auctionCard}>
@@ -91,12 +122,11 @@ export function AuctionCard({ auction }: AuctionCardProps) {
 
         <div className={styles.infoRow}>
           <p className={styles.bidText}>
-            <span>{!auctionActive ? 'Winning bid:' : 'Current bid:'}</span>{' '}
-            {auction.currentBid}
+            <span>{bidLabel}</span> {bidValueText}
           </p>
 
           <p className={styles.timerText}>
-            <span>Ends in:</span> {auction.endsIn}
+            <span>Ends in:</span> {endsInText}
           </p>
         </div>
 
@@ -153,7 +183,7 @@ export function AuctionCard({ auction }: AuctionCardProps) {
           auctionId={auction.id}
           startingBid={auction.startingBid}
           highestBid={auction.highestBid}
-          endTime={auction.endTime}
+          endTime={endTimeSec}
           onClose={() => setIsBidOpen(false)}
         />
       </Modal>
